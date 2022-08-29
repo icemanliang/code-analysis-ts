@@ -1,6 +1,6 @@
 # code-analysis-ts
 
-code-analysis-ts是一款ts代码分析工具，支持命令行/API模式两种模式调用，生成代码分析报告。可用于实现代码评分，代码告警，防止“脏”代码合入分支等功能，集成到CI可实现自动化。
+[code-analysis-ts](https://www.npmjs.com/package/code-analysis-ts)是一款ts代码分析工具，支持命令行/API模式两种模式调用，生成代码分析报告。可用于实现代码评分，代码告警，防止“脏”代码合入分支等功能，集成到CI可实现自动化。
 
 ## (1) 以命令行形式使用
 

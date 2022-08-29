@@ -1,10 +1,14 @@
 {
   "name": "code-analysis-ts",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "code analysis for ts",
   "main": "./index.js",
   "bin": {
     "ca": "./bin/index.js"
+  },
+  "registry": {
+    "type":"git",
+    "url":"https://github.com/liangxin199045/code-analysis-ts" 
   },
   "author": "734099485@qq.com",
   "license": "ISC",
