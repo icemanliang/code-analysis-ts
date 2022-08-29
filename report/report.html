@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>代码分析报告</title>
+    <style>
+      .header{
+        display: flex;
+        margin: 10px 0px;
+      }
+      .title{
+        font-size: 32px;
+        width: 270px;
+      }
+      .description {
+        display: flex;
+        margin: auto 0px;
+        color: #817e7e;
+        padding-left: 5px;
+      }
+      .disChild_red {
+        margin-left: 5px;
+        background-color: red;
+        padding: 5px;
+        white-space: nowrap;
+      }
+      .disChild_zone {
+        background-color: rgb(177, 128, 65);
+        padding: 5px;
+        white-space: nowrap;
+      }
+      .disChild_blue {
+        margin-left: 5px;
+        background-color: rgb(69, 170, 238);
+        padding: 5px;
+        white-space: nowrap;
+      }
+      .disChild_gray {
+        margin-left: 5px;
+        background-color: gray;
+        padding: 5px;
+        white-space: nowrap;
+      }
+      .main{
+        margin-bottom: 30px;
+      }
+      #api {
+        width: 100%;
+      }
+      .name {
+        margin-right: 20px;
+        color: green;
+        width: 250px;
+        
+      }
+      .main_area{
+        display: flex; 
+        width: 100%; 
+        border-top: 2px solid #d81414;
+      }
+      .api_area{
+        margin:auto 0px;
+      }
+      .second {
+        display: flex;
+        padding-bottom: 10px;
+      }
+      .owner {
+        color: #000000;
+        display: flex;
+        width: 280px;
+        min-width: 280px;
+        padding: 4px;
+        margin-right: 10px;
+        height: 26px;
+      }
+      .owner:hover {
+        cursor: pointer;
+        opacity: 0.9;
+      }
+      .children {
+        margin-left: 5px;
+        margin-top: 10px;
+        background-color: gray;
+        padding: 5px;
+        color: #ffffff;
+        white-space: nowrap;
+      }
+      .children:hover {
+        cursor: pointer;
+        opacity: 0.8;
+      }
+      #noApiText {
+        margin-top: 20px;
+      }
+      .red {
+        color: red;
+      }
+      .gray-card {
+        margin-left: 10px;
+        margin-top: 10px;
+        background-color: gray;
+        padding: 5px;
+        color: #ffffff;
+        white-space: nowrap;
+      }
+      .gray-card:hover {
+        cursor: pointer;
+        opacity: 0.8;
+      }
+      .area {
+        display: flex;
+        max-width: 3050px;
+        flex-wrap: wrap;
+        margin-top: -10px;
+      }
+      .area_detail {
+        display: flex;
+        max-width: 3050px;
+        flex-wrap: wrap;
+        margin-top: -10px;
+        padding: 20px;
+      }
+      #api_detail_grey {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+        text-align: center;
+        margin: 0;
+        border: 0;
+        padding: 0;
+        display: none;
+      }
+      .back-gray{
+        position: absolute;
+        top:0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: gray;
+        opacity: 0.3;
+        z-index: -1;
+      }
+      .api_detail_content {
+        margin: 200px auto 0px;
+        width: 800px;
+        height: 360px;
+        border: 1px solid gray;
+      }
+      .api_detail_header {
+        width: 100%;
+        height: 60px;
+        background-color: rgb(112, 117, 190);
+      }
+      .api_detail_title {
+        float: left;
+        height: 20px;
+        text-align: left;
+        width: 400px;
+        margin-top: 20px;
+        margin-right: 10px;
+        margin-left: 20px;
+        color: #fff;
+      }
+      .api_detail_closeBtn {
+        float: right;
+        height: 20px;
+        width: 50px;
+        margin-top: 20px;
+        margin-right: 10px;
+        color: #fff;
+      }
+      .api_detail_closeBtn:hover {
+        cursor: pointer;
+      }
+      #api_detail_main {
+        clear: both;
+        background-color: rgb(206, 197, 197);
+        width: 100%;
+        height: 300px;
+        overflow-y: scroll;
+      }
+      .card {
+        margin-left: 10px;
+        margin-top: 10px;
+        background-color: rgb(69, 170, 238);
+        padding: 5px;
+        color: #ffffff;
+        white-space: nowrap;
+      }
+      .card:hover {
+        cursor: pointer;
+      }
+      .noParse {
+        margin-top: 10px;
+      }
+      #api, #browserApiMap, #typeArea, #noUseMap, #noParse {
+        padding-top: 10px;
+      }
+      .noContent{
+        height:26px; 
+        padding: 4px 4px 10px 4px;
+      }
+      .line{
+        width: 1px; 
+        background-color: #d81414; 
+        margin: 10px;
+        box-shadow: 0px 0px 1px #d81414;
+      }
+      .line-2{
+        width: 1px; 
+        background-color: #d81414; 
+        margin: 0px 10px;
+        box-shadow: 0px 0px 1px #d81414;
+      }
+      .main_area_bottom{
+        border-bottom: 2px solid #d81414;
+      }
+      .score_area{
+        margin-top:12px;
+      }
+      #scoreNum {
+        font-size: 18px;
+        display: flex;
+      }
+      .left_score_title{
+        min-width: 270px;
+      }
+      .left_score_num{
+        margin-left: 5px;
+      }
+      #scoreMessage {
+        margin-top: 12px;
+        display: flex;
+        border-top: 2px solid #d81414;
+        padding-top: 16px;
+      }
+      .left_message{
+        font-size:18px;
+        color:red;
+        min-width: 270px;
+      }
+      .right_message{
+        color: gray;
+        margin-left: 5px;
+      }
+      .line_message{
+        padding-bottom: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div class="title">代码依赖分析报告</div>
+      <div class="description">
+        (tips: 红色字体表示API在黑名单中, 括号中的数字表示调用次数)
+      </div>
+    </div>
+    <div class="main">
+      <div class="main_area">
+        <div class="api_area">
+          <div class="name">Import APIS调用频次及文件分布:</div>
+        </div>
+        <div class="line"></div>
+        <div id="api">
+          <!-- -->
+        </div>
+      </div>
+      <!--browserApiArea -->
+      <div class="main_area">
+        <div class="api_area">
+          <div class="name">Browser API调用频次及文件分布:</div>
+        </div>
+        <div class="line"></div>
+        <div id="browserApiMap">
+      </div>
+        <!-- -->
+      </div>
+      <!--importTypeArea -->
+      <div class="main_area">
+        <div class="api_area">
+          <div class="name">Import Type调用频次及文件分布:</div>
+        </div>
+        <div class="line"></div>
+        <div id="typeArea">
+          <!-- -->
+        </div>
+      </div>
+      <!--noUseArea -->
+      <div class="main_area">
+        <div class="api_area">
+          <div class="name">Import APIS引入未使用文件分布:</div>
+        </div>
+        <div class="line"></div>
+        <div id="noUseMap">
+          <!-- -->
+        </div>
+      </div>
+      <!--noParseArea -->
+      <div class="main_area main_area_bottom">
+        <div class="api_area">
+          <div class="name">解析AST or 执行异常的文件分布:</div>
+        </div>
+        <div class="line"></div>
+        <div id="noParse">
+          <!-- -->
+        </div>
+      </div>
+      <!--scoreArea -->
+      <div class="score_area">
+        <div id="scoreNum"></div>
+        <div id="scoreMessage">
+          <!-- -->
+        </div>
+      </div>
+    </div>
+
+    <!--蒙层Dialog-->
+    <div id="api_detail_grey">
+      <div class="back-gray" onclick="api_hide()"></div>
+      <div class="api_detail_content">
+        <div class="api_detail_header">
+          <div class="api_detail_title"></div>
+          <div class="api_detail_closeBtn" onclick="api_hide()">关闭</div>
+        </div>
+        <div id="api_detail_main"></div>
+      </div>
+    </div>
+
+    <script src="./report.js"></script>
+    <script src="./jquery.min.js"></script>
+    <script>
+      // 隐藏蒙层
+      function api_hide() {
+        document.getElementById('api_detail_grey').style.display = 'none';
+        document.getElementsByClassName('api_detail_title').innerText = '';
+      }
+      // 展示蒙层
+      function parse_show(event) {
+        const module = event.target.getAttribute('data-f');
+        const stackMessage = report.noParseFiles[module].stack;
+        noParseDetails(stackMessage);
+        document.getElementsByClassName('api_detail_title')[0].innerText = report.noParseFiles[module].file;
+        document.getElementById('api_detail_grey').style.display = 'block';
+      }
+      // 点击解析失败详情处理
+      function noParseDetails(stackMessage) {
+        var html = '';
+        html = html + '<div class="area_detail" style="text-align:left;">';
+        html = html + stackMessage;
+        html = html + '</div>';
+        document.getElementById('api_detail_main').innerHTML = html;
+      }
+      
+      //  处理apiMap
+      function doApi() {
+        var html = '';
+        var data = report.apiMap;
+        Object.keys(data).forEach(element => {
+          html = html + '<div class="first">';
+          if(data[element].noDeep){
+            html = html + '<div class="second"><div class="owner"';
+            if(data[element].isBlack){
+              html = html + ' style="color:red"';
+            }
+            html = html + ' >';
+            html = html + element;
+            html = html + ' ( ';
+            html = html + data[element].callNum;
+            html = html + ' ) ';
+            html = html + '</div><div class="area">';
+            Object.keys(data[element].callOrigin).forEach(pelement => {
+              html = html + '<div class="card">';
+              html = html + pelement;
+              html = html + ' : [ ';
+                const lineTemp = data[element].callOrigin[pelement];
+                for(let i=0; i<lineTemp.length; i++){
+                  html = html + lineTemp[i];
+                  if(i<lineTemp.length-1){
+                    html = html + ', ';
+                  }
+                }
+              html = html + ' ] ';
+              html = html + '</div>';
+            });
+            html = html + '</div></div>';
+          }else{
+            Object.keys(data[element]).forEach(selement => {
+              if (data[element][selement].children) {
+                Object.keys(data[element][selement].children).forEach(telement => {
+                  html = html + '<div class="second"><div class="owner"';
+                  if(data[element][selement].children[telement].isBlack){
+                    html = html + ' style="color:red"';
+                  }
+                  html = html + ' >';
+                  html = html + element;
+                  html = html + '.';
+                  html = html + selement;
+                  html = html + '.';
+                  html = html + telement;
+                  html = html + ' ( ';
+                  html = html + data[element][selement].children[telement].callNum;
+                  html = html + ' ) ';
+                  html = html + '</div><div class="area">';
+                  Object.keys(data[element][selement].children[telement].callOrigin).forEach(pelement => {
+                    html = html + '<div class="card">';
+                    html = html + pelement;
+                    html = html + ' : [ ';
+                    const lineTemp = data[element][selement].children[telement].callOrigin[pelement];
+                    for(let i=0; i<lineTemp.length; i++){
+                      html = html + lineTemp[i];
+                      if(i<lineTemp.length-1){
+                        html = html + ', ';
+                      }
+                    }
+                    html = html + ' ] ';
+                    html = html + '</div>';
+                  });
+                  html = html + '</div></div>';
+                });
+              }else{
+                html = html + '<div class="second"><div class="owner"';
+                if(data[element][selement].isBlack){
+                  html = html + ' style="color:red"';
+                }
+                html = html + ' >';
+                html = html + element;
+                html = html + '.';
+                html = html + selement;
+                html = html + ' ( ';
+                html = html + data[element][selement].callNum;
+                html = html + ' ) ';
+                html = html + '</div><div class="area">';
+                Object.keys(data[element][selement].callOrigin).forEach(pelement => {
+                  html = html + '<div class="card">';
+                  html = html + pelement;
+                  html = html + ' : [ ';
+                    const lineTemp = data[element][selement].callOrigin[pelement];
+                    for(let i=0; i<lineTemp.length; i++){
+                      html = html + lineTemp[i];
+                      if(i<lineTemp.length-1){
+                        html = html + ', ';
+                      }
+                    }
+                  html = html + ' ] ';
+                  html = html + '</div>';
+                });
+                html = html + '</div></div>';
+              }
+            });
+          }
+          html = html + '</div>';
+        });
+        if(html ==''){
+          document.getElementById('api').innerHTML ='<div class="noContent">-</div>';
+          return;
+        }
+        // console.log(html);
+        document.getElementById('api').innerHTML = html;
+      }
+      //  处理noParseMap
+      function doNoParse() {
+        var html = '';
+        if(report.noParseFiles.length >0){
+          html = html + '<div class="second"><div class="owner">-</div><div class="area">';
+          report.noParseFiles.forEach((element, index) => {
+            html = html + '<div class="gray-card';
+            html = html + '" onclick="parse_show(event)" data-f="';
+            html = html + index;
+            html = html + '">';
+            html = html + element.file;
+            html = html + ' ( 点击查看错误详情 ) ';
+            html = html + '</div>';
+          });
+          html = html + '</div></div>';
+        }
+        if(html ==''){
+          document.getElementById('noParse').innerHTML ='<div class="noContent">-</div>';
+          return;
+        }
+        document.getElementById('noParse').innerHTML = html;
+      }
+
+      //  处理typeMap
+      function doType() {
+        var html = '';
+        var data = report.typeMap;
+        Object.keys(data).forEach(element => {
+          html = html + '<div class="second"><div class="owner">';
+          html = html + element;
+          html = html + ' ( ';
+          html = html + data[element].callNum;
+          html = html + ' ) ';
+          html = html + '</div><div class="area">';
+          Object.keys(data[element].callOrigin).forEach(selement => {
+            html = html + '<div class="card">';
+            html = html + selement;
+            html = html + ' : [ ';
+              const lineTemp = data[element].callOrigin[selement];
+              for(let i=0; i<lineTemp.length; i++){
+                html = html + lineTemp[i];
+                if(i<lineTemp.length-1){
+                  html = html + ', ';
+                }
+              }
+            html = html + ' ] ';
+            html = html + '</div>';
+          });
+          html = html + '</div></div>';
+        });
+        if(html ==''){
+          document.getElementById('typeArea').innerHTML ='<div class="noContent">-</div>';
+          return;
+        }
+        document.getElementById('typeArea').innerHTML = html;
+      }
+
+      //  处理browserApiMap
+      function doBrowser() {
+        var html = '';
+        var data = report.browserApiMap;
+        Object.keys(data).forEach(element => {
+          html = html + '<div class="first">';
+          Object.keys(data[element]).forEach(selement => {
+            html = html + '<div class="second"><div class="owner">';
+            html = html + element;
+            html = html + '.';
+            html = html + selement;
+            html = html + ' ( ';
+            html = html + data[element][selement].callNum;
+            html = html + ' ) ';
+            html = html + '</div><div class="area">';
+            if (data[element][selement]) {
+              Object.keys(data[element][selement].callOrigin).forEach(telement => {
+                html = html + '<div class="card">';
+                html = html + telement;
+                html = html + ' : [ ';
+                  const lineTemp = data[element][selement].callOrigin[telement];
+                  for(let i=0; i<lineTemp.length; i++){
+                    html = html + lineTemp[i];
+                    if(i<lineTemp.length-1){
+                      html = html + ', ';
+                    }
+                  }
+                html = html + ' ] ';
+                html = html + '</div>';
+              });
+            }
+            html = html + '</div></div>';
+          });
+          html = html + '</div>';
+        });
+        if(html ==''){
+          document.getElementById('browserApiMap').innerHTML ='<div class="noContent">-</div>';
+          return;
+        }
+        // console.log(html);
+        document.getElementById('browserApiMap').innerHTML = html;
+      }
+
+      //  处理noUseMap
+      function doNoUse() {
+        var html = '';
+        var data = report.noUseMap;
+        Object.keys(data).forEach(element => {
+          html = html + '<div class="second"><div class="owner">';
+          html = html + element;
+          html = html + ' ( ';
+          html = html + data[element].callNum;
+          html = html + ' ) ';
+          html = html + '</div><div class="area">';
+          data[element].callOrigin.forEach(selement => {
+            html = html + '<div class="card" data-f="';
+            html = html + element;
+            html = html + '" data-s="';
+            html = html + selement;
+            html = html + '" data-map="';
+            html = html + 'noUseMap';
+            html = html + '">';
+            html = html + selement;
+            html = html + '</div>';
+          });
+          html = html + '</div></div>';
+        });
+        if(html ==''){
+          document.getElementById('noUseMap').innerHTML ='<div class="noContent">-</div>';
+          return;
+        }
+        document.getElementById('noUseMap').innerHTML = html;
+      }
+
+      // 展示分数及代码建议
+      function doScore(){
+        var data = report.scoreMap;
+        var leftHtml ='<div class="left_score_title">代码得分：</div><div class="line-2"></div><div class="left_score_num">';
+        leftHtml = leftHtml + data.score;
+        leftHtml = leftHtml + ' 分';
+        document.getElementById('scoreNum').innerHTML = leftHtml;
+
+        if(data.message.length>0){
+          var html ='<div class="left_message">优化建议：</div><div class="line"></div>';
+          html = html + '<div class="right_message">';
+          data.message.forEach((mes, index)=>{
+            html = html + '<div class="line_message">';
+            html = html + (index+1);
+            html = html + '.  ';
+            html = html + mes;
+            html = html + '</div>';
+          })
+          html = html + '</div>';
+          document.getElementById('scoreMessage').innerHTML = html;
+        }
+      }
+
+      doApi();
+      doNoParse();
+      doType();
+      doBrowser();
+      doNoUse();
+      doScore();
+
+    </script>
+  </body>
+</html>
