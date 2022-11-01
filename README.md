@@ -1,10 +1,12 @@
 # code-analysis-ts
 
-[code-analysis-ts](https://www.npmjs.com/package/code-analysis-ts)是一款ts代码扫描分析工具，支持命令行/API调用两种模式。可用于生成代码分析报告，实现代码评分，代码告警，“脏”代码合入拦截等功能，可通过npm script非常方便的集成到业务的CI自动化流程中。
+[code-analysis-ts](https://www.npmjs.com/package/code-analysis-ts)是一款ts代码扫描分析工具，可用于生成代码分析报告，实现代码评分，代码告警，“脏”代码拦截等功能。支持CLI/API两种使用模式，通过npm script可以快速集成到业务CI自动化流程中。
 
 ## Install
 
-1. npm install code-analysis-ts
+```javascript
+npm install code-analysis-ts --save-dev    // 建议局部安装dev，配置npm script使用
+```
 ## Config
 
 2. 创建 analysis.config.js 配置文件
@@ -24,24 +26,34 @@ module.exports ={
 ```
 ## Mode
 ### (1) cli 模式
+demo:
 
 ```javascript
-ca analysis         // 建议添加到npm script
+// package.json 片段，建议添加到npm script
+...
+"scripts": {
+    "analysis": "ca analysis"
+}
+...
+// run command
+$ npm run analysis        
 ```
 ### (2) api 模式
 
 demo:
 
 ```javascript
-import analysis from 'code-analysis-ts';
+const analysis = require('code-analysis-ts-for-sellercenter');
 
-function async start(){
+async function start() {
     try{
-        const code_report = await analysis(options);                           // options配置等同于analysis.config.js配置文件
+        const code_report = await analysis(options);                           // options is same as analysis.config.js
+        console.log(code_report);
     }catch(e){
         console.log(e);
     }
-}
+};
+
 start();
 ```
 ## Demo

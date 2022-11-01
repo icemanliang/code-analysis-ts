@@ -1,11 +1,11 @@
 #!/usr/bin/env node
-const program = require('commander');                                   // 美化命令行交互
-const { execSync } = require('child_process');                          // 子进程操作
-const path = require('path');                                           // 路径操作
-const fs =require('fs');                                                // 文件操作
-const chalk = require('chalk');                                         // 美化命令行输出
-const codeAnalysis =require(path.join(__dirname,'../lib/index'));       // 核心入口
-const { writeReport } = require(path.join(__dirname, '../lib/file'));   // 文件操作工具方法
+const program = require('commander');                                       // 美化命令行交互
+const { execSync } = require('child_process');                              // 子进程操作
+const path = require('path');                                               // 路径操作
+const fs =require('fs');                                                    // 文件操作
+const chalk = require('chalk');                                             // 美化命令行输出
+const codeAnalysis =require(path.join(__dirname,'../lib/index'));           // 核心入口
+const { writeReport } = require(path.join(__dirname, '../lib/report'));     // 文件操作工具方法
 
 program
     .command('analysis')

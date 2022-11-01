@@ -1,5 +1,6 @@
 const fs =require('fs');                                                // 文件操作
-const codeAnalysis = require(path.join(__dirname, './lib/index'));      // 核心入口
+const path =require('path');                                            // 路径操作
+const codeAnalysis = require(path.join(__dirname, '../lib/index'));     // 核心入口
 
 const analysis = async function(options){
     if(options){
@@ -22,7 +23,7 @@ const analysis = async function(options){
         return;
     }
     try{
-        const report = await codeAnalysis(config);
+        const report = await codeAnalysis(options);
         return Promise.resolve(report);
     }catch(e){
         return Promise.reject(e.stack);
