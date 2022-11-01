@@ -1,6 +1,6 @@
 {
   "name": "code-analysis-ts",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "code analysis for ts",
   "main": "./api/index.js",
   "bin": {
