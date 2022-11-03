@@ -4,18 +4,26 @@ const codeAnalysis = require(path.join(__dirname, '../lib/index'));     // 核�
 
 const analysis = async function(options){
     if(options){
-        if(!options.scanPath){
-            Promise.reject(new Error('error: scanPath参数不能为空'))
+        if(!options.scanPath || !Array.isArray(options.scanPath) || options.scanPath.length ==0){
+            Promise.reject(new Error('error: scanPath参数有误'))
+            return;
+        }
+        let isCodePath = true;
+        let unExistDir = '';
+        for (let i =0; i<options.scanPath.length; i++){
+            const scanPath = path.join(process.cwd(), options.scanPath[i]);
+            if(!fs.existsSync(scanPath)){
+                isCodePath = false;
+                unExistDir = options.scanPath[i];
+                break;
+            }
+        }
+        if(!isCodePath){
+            Promise.reject(new Error(`error: 待分析文件目录${unExistDir}不存在`))
             return;
         }
         if(!options.target){
             Promise.reject(new Error('error: target参数不能为空'))
-            return;
-        }
-        const scanPath =path.join(process.cwd(), options.scanPath);
-        const isCodePath =fs.existsSync(scanPath);
-        if(!isCodePath){
-            Promise.reject(new Error('error: 待分析文件目录不存在'))
             return;
         }
     }else{

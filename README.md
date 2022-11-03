@@ -14,14 +14,14 @@ yarn add code-analysis-ts --dev
 新建 analysis.config.js 配置文件:
 ```javascript
 module.exports = {
-    scanPath: 'src',                                                            // 必须，需要分析的文件目录名
-    target: 'framework',                                                        // 必须，需要分析的依赖名
-    blackApis: ['app.localStorage.set'],                                        // 可选, api黑名单，默认为空数组
-    browserApis: ['window','document','history','location'],                    // 可选，要分析的browserapi，默认为空数组
-    reportDir: 'report',                                                        // 可选，生成代码分析报告的目录，默认为code_report
-    isScanVue: true,                                                            // 可选，是否要扫描分析vue中的ts代码，默认为false
-    scoreFun: null,                                                             // 可选，自定义代码评分函数，默认为null即采用工具默认评分函数
-    thresholdScore: 90                                                          // 可选，开启代码告警及设置合格阈值分数，默认为null即关闭告警逻辑
+    scanPath: ['src'],                                                // 必须，需要分析的文件目录名数组
+    target: 'framework',                                              // 必须，需要分析的依赖名
+    blackApis: ['app.localStorage.set'],                              // 可选, api黑名单，默认为空数组
+    browserApis: ['window','document','history','location'],          // 可选，要分析的BrowserApi，默认为空数组
+    reportDir: 'report',                                              // 可选，生成代码分析报告的目录，默认为report
+    isScanVue: true,                                                  // 可选，是否要扫描分析vue中的ts代码，默认为false
+    scoreFun: 'default',                                              // 可选，代码评分插件 : Function|'default'|null, default运行默认评分插件，null表示不评分
+    thresholdScore: 90                                                // 可选，开启代码告警及阈值分数(0-100)，默认为null即关闭告警逻辑 (CLI模式生效)
 }
 ```
 ## Mode
@@ -47,14 +47,13 @@ const analysis = require('code-analysis-ts');
 async function scan() {
     try{
         const codeReport = await analysis({
-            scanPath: 'src',                                               // 必须，需要分析的文件目录名
-            target: 'framework',                                           // 必须，需要分析的依赖名
-            blackApis: ['app.localStorage.set'],                           // 可选, api黑名单，默认为空数组
-            browserApis: ['window','document','history','location'],       // 可选，要分析的browserapi，默认为空数组
-            reportDir: 'report',                                           // 可选，生成代码分析报告的目录，默认为code_report
-            isScanVue: true,                                               // 可选，是否要扫描分析vue中的ts代码，默认为false
-            scoreFun: null,                                                // 可选，自定义代码评分函数，默认为null即采用工具默认评分函数
-            thresholdScore: 90                                             // 可选，开启代码告警及设置合格阈值分数，默认为null即关闭告警逻辑
+            scanPath: ['src'],                                                // 必须，需要分析的文件目录名数组
+            target: 'framework',                                              // 必须，需要分析的依赖名
+            blackApis: ['app.localStorage.set'],                              // 可选, api黑名单，默认为空数组
+            browserApis: ['window','document','history','location'],          // 可选，要分析的BrowserApi，默认为空数组
+            reportDir: 'report',                                              // 可选，生成代码分析报告的目录，默认为report
+            isScanVue: true,                                                  // 可选，是否要扫描分析vue中的ts代码，默认为false
+            scoreFun: 'default'                                               // 可选，代码评分插件 : Function|'default'|null, default运行默认评分插件，null表示不评分
         });                                                                          
         console.log(codeReport);
     }catch(e){
@@ -67,3 +66,67 @@ scan();
 ## Demo
 
 [code-demo](https://github.com/liangxin199045/code-demo)演示如何使用code-analysis-ts的demo项目,使用github pages部署代码分析报告
+
+## scoreFun说明
+配置文件中的scoreFun配置项属于“函数插件”，使用者可以自定义代码评分函数来消费分析产物，需要使用者对代码分析工具及其数据结构有一定理解。下面是一个demo:
+```javascript
+// score.js
+exports.myScoreDeal = function (codeObj){                           // 入参是代码分析结果数据对象上下文
+    const { 
+        apiMap,                                                     // api分析结果
+        noUseMap,                                                   // 引入但未调用分析结果
+        parseErrorFiles,                                            // 解析失败文件分析结果
+        browserApiMap                                               // browserapi分析结果
+    } = codeObj;
+    
+    let score = 100;                                                // 初始分数
+    let message =[];                                                // 代码建议
+
+    // 黑名单api扣分处理
+    Object.keys(apiMap).forEach((fitem)=>{
+        if(apiMap[fitem].noDeep){
+            if(apiMap[fitem].isBlack){
+                score = score - 5;
+                message.push(fitem + ' 属于黑名单api，请勿使用');
+            }
+        }else{
+            Object.keys(apiMap[fitem]).forEach((sitem)=>{
+                if(apiMap[fitem][sitem].children){
+                    Object.keys(apiMap[fitem][sitem].children).forEach((titem)=>{
+                        const temp =apiMap[fitem][sitem].children[titem];
+                        if(temp.isBlack){
+                            score = score - 5;
+                            message.push(fitem + '.' + sitem + '.' + titem + ' 属于黑名单api，请勿使用');
+                        }
+                    })
+                }else{
+                    const temp = apiMap[fitem][sitem];
+                    if(temp.isBlack){
+                        score = score - 5;
+                        message.push(fitem + '.' + sitem + ' 属于黑名单api，请勿使用');
+                    }
+                }
+            })
+        }
+    })
+    // 最低0分处理
+    if(score <0)score =0;
+
+    // return返回一个带有score属性，message属性的对象(必须)
+    return {                                   
+        score: score,                          // number
+        message: message                       // string[]
+    }
+}
+
+//analysis.config.js
+const { myScoreDeal } = require('./score.js');            // 自定义代码评分函数
+
+module.exports = {
+    ...
+    scoreFun: myScoreDeal,
+    ...
+}
+
+```
+scoreFun 为null表示不评分，为'default'表示运行工具默认评分插件。

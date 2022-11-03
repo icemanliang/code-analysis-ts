@@ -1,6 +1,6 @@
 {
   "name": "code-analysis-ts",
-  "version": "1.1.6",
+  "version": "1.2.0",
   "description": "code analysis for ts",
   "main": "./api/index.js",
   "bin": {
@@ -18,7 +18,12 @@
     "chalk": "^4.1.0",
     "commander": "^6.2.0",
     "glob": "^7.1.6",
+    "moment": "^2.29.4",
     "ora": "^5.1.0",
     "typescript": "4.7.4"
+  },
+  "engines": {
+    "node": ">= 14.0.0",
+    "npm": ">= 4.0.0"
   }
 }

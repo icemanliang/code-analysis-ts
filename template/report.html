@@ -9,15 +9,18 @@
         display: flex;
         margin: 10px 0px;
       }
+      .header:hover{
+        cursor: default;
+      }
       .title{
-        font-size: 32px;
-        width: 270px;
+        font-size: 30px;
+        width: 600px;
       }
       .description {
         display: flex;
         margin: auto 0px;
         color: #817e7e;
-        padding-left: 5px;
+        padding-top: 8px;
       }
       .disChild_red {
         margin-left: 5px;
@@ -76,7 +79,7 @@
         height: 26px;
       }
       .owner:hover {
-        cursor: pointer;
+        cursor: default;
         opacity: 0.9;
       }
       .children {
@@ -224,14 +227,21 @@
         margin-top:12px;
       }
       #scoreNum {
-        font-size: 18px;
         display: flex;
       }
       .left_score_title{
+        text-align: center;
+        color:rgb(13, 52, 226);
         min-width: 270px;
+      }
+      .left_score_title:hover{
+        cursor: default;
       }
       .left_score_num{
         margin-left: 5px;
+      }
+      .left_score_num:hover{
+        cursor: default;
       }
       #scoreMessage {
         margin-top: 12px;
@@ -240,24 +250,33 @@
         padding-top: 16px;
       }
       .left_message{
-        font-size:18px;
-        color:red;
+        text-align: center;
+        color:rgb(13, 52, 226);
         min-width: 270px;
+      }
+      .left_message:hover{
+        cursor: default;
       }
       .right_message{
         color: gray;
         margin-left: 5px;
       }
+      .right_message:hover{
+        cursor: default;
+      }
       .line_message{
         padding-bottom: 5px;
+      }
+      .name:hover {
+        cursor: default;
       }
     </style>
   </head>
   <body>
     <div class="header">
-      <div class="title">代码分析报告</div>
+      <div class="title">代码分析报告<span style="font-size:16px;color:gray;" id="reportTime"></span></div>
       <div class="description">
-        (tips: 红色字体表示API在黑名单中, 括号中的数字表示调用次数)
+        <span style="color:blue;"">tips：</span> 红色字体表示黑名单api， ( ) 中数字表示调用次数，[ ] 中数字表示所在文件代码行
       </div>
     </div>
     <div class="main">
@@ -342,9 +361,9 @@
       // 展示蒙层
       function parse_show(event) {
         const module = event.target.getAttribute('data-f');
-        const stackMessage = report.noParseFiles[module].stack;
+        const stackMessage = report.parseErrorFiles[module].stack;
         noParseDetails(stackMessage);
-        document.getElementsByClassName('api_detail_title')[0].innerText = report.noParseFiles[module].file;
+        document.getElementsByClassName('api_detail_title')[0].innerText = report.parseErrorFiles[module].file;
         document.getElementById('api_detail_grey').style.display = 'block';
       }
       // 点击解析失败详情处理
@@ -465,9 +484,9 @@
       //  处理noParseMap
       function doNoParse() {
         var html = '';
-        if(report.noParseFiles.length >0){
+        if(report.parseErrorFiles.length >0){
           html = html + '<div class="second"><div class="owner">-</div><div class="area">';
-          report.noParseFiles.forEach((element, index) => {
+          report.parseErrorFiles.forEach((element, index) => {
             html = html + '<div class="gray-card';
             html = html + '" onclick="parse_show(event)" data-f="';
             html = html + index;
@@ -616,12 +635,18 @@
         }
       }
 
+      document.getElementById('reportTime').innerHTML = ' (' + report.analysisTime + ') ';
       doApi();
       doNoParse();
       doType();
       doBrowser();
       doNoUse();
-      doScore();
+      if(report.scoreMap){
+        doScore();
+      }else{
+        document.getElementById('scoreNum').style.display = 'none';
+        document.getElementById('scoreMessage').style.display = 'none';
+      }
 
     </script>
   </body>
