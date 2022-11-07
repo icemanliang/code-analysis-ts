@@ -1,6 +1,6 @@
 # code-analysis-ts
 
-[code-analysis-ts](https://www.npmjs.com/package/code-analysis-ts)是一款ts代码扫描分析工具，可用于生成代码分析报告，实现代码评分，代码告警，“脏”代码拦截等功能。支持CLI/API两种使用模式，通过npm script可以快速集成到业务CI自动化流程中。
+[code-analysis-ts](https://www.npmjs.com/package/code-analysis-ts)是一款TS代码扫描分析工具，可用于生成代码分析报告，实现代码评分，代码告警，“脏”代码拦截等功能。支持CLI/API两种使用模式，通过npm script可以快速集成到业务CI自动化流程中。
 
 ## Install
 
@@ -13,14 +13,29 @@ yarn add code-analysis-ts --dev
 
 新建 analysis.config.js 配置文件:
 ```javascript
+const { execSync } = require('child_process');                        // 子进程操作
+const DefaultBranch = 'master';                                       // 默认分支常量
+function getGitBranch() {                                             // 获取当然分支
+    try{
+        const res = execSync('git branch');
+        return res.toString("utf8").replace('*','').trim();
+    }catch(e){
+        return DefaultBranch;
+    }
+}
+
 module.exports = {
-    scanPath: ['src'],                                                // 必须，需要分析的文件目录名数组
-    target: 'framework',                                              // 必须，需要分析的依赖名
-    blackApis: ['app.localStorage.set'],                              // 可选, api黑名单，默认为空数组
+    scanSource: [{                                                    // 必须，待扫描源码的配置信息
+        name: 'Market',                                                    // 必填，项目名称
+        path: ['src'],                                                     // 必填，需要扫描的文件路径
+        httpRepo: `https://gitlab.xxx.com/xxx/-/blob/${getGitBranch()}/`   // 可选，项目gitlab/github url的访问前缀，用于点击行信息跳转，不填则不跳转
+    }],                                                                 
+    analysisTarget: 'framework',                                      // 必须，要分析的目标依赖名
+    blackApis: ['app.localStorage.set'],                              // 可选，需要标记的黑名单api，默认为空数组
     browserApis: ['window','document','history','location'],          // 可选，要分析的BrowserApi，默认为空数组
     reportDir: 'report',                                              // 可选，生成代码分析报告的目录，默认为report
     isScanVue: true,                                                  // 可选，是否要扫描分析vue中的ts代码，默认为false
-    scoreFun: 'default',                                              // 可选，代码评分插件 : Function|'default'|null, default运行默认评分插件，null表示不评分
+    scorePlugin: 'default',                                           // 可选，评分插件: Function|'default'|null, default表示运行默认插件，null表示不评分
     thresholdScore: 90                                                // 可选，开启代码告警及阈值分数(0-100)，默认为null即关闭告警逻辑 (CLI模式生效)
 }
 ```
@@ -47,13 +62,17 @@ const analysis = require('code-analysis-ts');
 async function scan() {
     try{
         const codeReport = await analysis({
-            scanPath: ['src'],                                                // 必须，需要分析的文件目录名数组
-            target: 'framework',                                              // 必须，需要分析的依赖名
-            blackApis: ['app.localStorage.set'],                              // 可选, api黑名单，默认为空数组
-            browserApis: ['window','document','history','location'],          // 可选，要分析的BrowserApi，默认为空数组
-            reportDir: 'report',                                              // 可选，生成代码分析报告的目录，默认为report
-            isScanVue: true,                                                  // 可选，是否要扫描分析vue中的ts代码，默认为false
-            scoreFun: 'default'                                               // 可选，代码评分插件 : Function|'default'|null, default运行默认评分插件，null表示不评分
+            scanSource: [{                                                // 必须，待扫描源码的配置信息
+                name: 'Market',                                                // 必填，项目名称
+                path: ['src'],                                                 // 必填，需要扫描的文件路径
+                httpRepo: `https://gitlab.xxx.com/xxx/-/blob/${xxx}/`          // 可选，项目gitlab/github url的访问前缀，用于点击行信息跳转，不填则不跳转
+            }],                                                                 
+            analysisTarget: 'framework',                                  // 必须，要分析的目标依赖名
+            blackApis: ['app.localStorage.set'],                          // 可选，需要标记的黑名单api，默认为空数组
+            browserApis: ['window','document','history','location'],      // 可选，要分析的BrowserApi，默认为空数组
+            reportDir: 'report',                                          // 可选，生成代码分析报告的目录，默认为report
+            isScanVue: true,                                              // 可选，是否要扫描分析vue中的ts代码，默认为false
+            scorePlugin: 'default'                                        // 可选，评分插件: Function|'default'|null, default表示运行默认插件，null表示不评分
         });                                                                          
         console.log(codeReport);
     }catch(e){
@@ -67,13 +86,14 @@ scan();
 
 [code-demo](https://github.com/liangxin199045/code-demo)演示如何使用code-analysis-ts的demo项目,使用github pages部署代码分析报告
 
-## scoreFun说明
-配置文件中的scoreFun配置项属于“函数插件”，使用者可以自定义代码评分函数来消费分析产物，需要使用者对代码分析工具及其数据结构有一定理解。下面是一个demo:
+## scorePlugin说明
+配置文件中的scorePlugin配置项属于“函数插件”，使用者可以自定义代码评分插件来消费分析产物，开发插件需要对分析产物数据结构及属性有一定理解。下面是一个demo:
 ```javascript
 // score.js
 exports.myScoreDeal = function (codeObj){                           // 入参是代码分析结果数据对象上下文
     const { 
-        apiMap,                                                     // api分析结果
+        apiMap,                                                     // 引入api分析结果
+        typeMap,                                                    // 引入Type分析结果
         noUseMap,                                                   // 引入但未调用分析结果
         parseErrorFiles,                                            // 解析失败文件分析结果
         browserApiMap                                               // browserapi分析结果
@@ -120,13 +140,13 @@ exports.myScoreDeal = function (codeObj){                           // 入参是
 }
 
 //analysis.config.js
-const { myScoreDeal } = require('./score.js');            // 自定义代码评分函数
+const { myScoreDeal } = require('./score.js');            // 自定义评分插件
 
 module.exports = {
     ...
-    scoreFun: myScoreDeal,
+    scorePlugin: myScoreDeal,
     ...
 }
 
 ```
-scoreFun 为null表示不评分，为'default'表示运行工具默认评分插件。
+scorePlugin 为null表示不评分，为'default'表示运行默认评分插件。

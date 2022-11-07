@@ -276,7 +276,7 @@
     <div class="header">
       <div class="title">代码分析报告<span style="font-size:16px;color:gray;" id="reportTime"></span></div>
       <div class="description">
-        <span style="color:blue;"">tips：</span> 红色字体表示黑名单api， ( ) 中数字表示调用次数，[ ] 中数字表示所在文件代码行
+        <span style="color:blue;"">tips：</span> 红色字体表示黑名单API，( ) 中数字表示API调用次数，[ ] 中数字表示API所在文件代码行（若配置httpRepo可跳转）
       </div>
     </div>
     <div class="main">
@@ -350,7 +350,7 @@
       </div>
     </div>
 
-    <script src="./report.js"></script>
+    <script src="./index.js"></script>
     <script src="./jquery.min.js"></script>
     <script>
       // 隐藏蒙层
@@ -394,13 +394,29 @@
             html = html + '</div><div class="area">';
             Object.keys(data[element].callOrigin).forEach(pelement => {
               html = html + '<div class="card">';
+              html = html + '<span style="color:#e9eb0c;">';
+              html = html + data[element].callOrigin[pelement].projectName;
+              html = html + ' : ';
+              html = html + '</span>';
               html = html + pelement;
               html = html + ' : [ ';
-                const lineTemp = data[element].callOrigin[pelement];
+                const lineTemp = data[element].callOrigin[pelement].lines;
+                const httpRepo = data[element].callOrigin[pelement].httpRepo || '';
                 for(let i=0; i<lineTemp.length; i++){
-                  html = html + lineTemp[i];
+                  if(httpRepo){
+                    html = html + '<a href="';
+                    html = html + httpRepo;
+                    html = html + pelement;
+                    html = html + '#L';
+                    html = html + lineTemp[i];
+                    html = html + '" target="_blank">';
+                    html = html + lineTemp[i];
+                    html = html + '</a>';
+                  }else{
+                    html = html + lineTemp[i];
+                  }
                   if(i<lineTemp.length-1){
-                    html = html + ', ';
+                    html = html + ' , ';
                   }
                 }
               html = html + ' ] ';
@@ -427,13 +443,29 @@
                   html = html + '</div><div class="area">';
                   Object.keys(data[element][selement].children[telement].callOrigin).forEach(pelement => {
                     html = html + '<div class="card">';
+                    html = html + '<span style="color:#e9eb0c;">';
+                    html = html + data[element][selement].children[telement].callOrigin[pelement].projectName;
+                    html = html + ' : ';
+                    html = html + '</span>';
                     html = html + pelement;
                     html = html + ' : [ ';
-                    const lineTemp = data[element][selement].children[telement].callOrigin[pelement];
+                    const lineTemp = data[element][selement].children[telement].callOrigin[pelement].lines;
+                    const httpRepo = data[element][selement].children[telement].callOrigin[pelement].httpRepo || '';
                     for(let i=0; i<lineTemp.length; i++){
-                      html = html + lineTemp[i];
+                      if(httpRepo){
+                        html = html + '<a href="';
+                        html = html + httpRepo;
+                        html = html + pelement;
+                        html = html + '#L';
+                        html = html + lineTemp[i];
+                        html = html + '" target="_blank">';
+                        html = html + lineTemp[i];
+                        html = html + '</a>';
+                      }else{
+                        html = html + lineTemp[i];
+                      }
                       if(i<lineTemp.length-1){
-                        html = html + ', ';
+                        html = html + ' , ';
                       }
                     }
                     html = html + ' ] ';
@@ -456,13 +488,29 @@
                 html = html + '</div><div class="area">';
                 Object.keys(data[element][selement].callOrigin).forEach(pelement => {
                   html = html + '<div class="card">';
+                  html = html + '<span style="color:#e9eb0c;">';
+                  html = html + data[element][selement].callOrigin[pelement].projectName;
+                  html = html + ' : ';
+                  html = html + '</span>';
                   html = html + pelement;
                   html = html + ' : [ ';
-                    const lineTemp = data[element][selement].callOrigin[pelement];
+                    const lineTemp = data[element][selement].callOrigin[pelement].lines;
+                    const httpRepo = data[element][selement].callOrigin[pelement].httpRepo || '';
                     for(let i=0; i<lineTemp.length; i++){
-                      html = html + lineTemp[i];
+                      if(httpRepo){
+                        html = html + '<a href="';
+                        html = html + httpRepo;
+                        html = html + pelement;
+                        html = html + '#L';
+                        html = html + lineTemp[i];
+                        html = html + '" target="_blank">';
+                        html = html + lineTemp[i];
+                        html = html + '</a>';
+                      }else{
+                        html = html + lineTemp[i];
+                      }
                       if(i<lineTemp.length-1){
-                        html = html + ', ';
+                        html = html + ' , ';
                       }
                     }
                   html = html + ' ] ';
@@ -491,6 +539,10 @@
             html = html + '" onclick="parse_show(event)" data-f="';
             html = html + index;
             html = html + '">';
+            html = html + '<span style="color:#e9eb0c;">';
+            html = html + element.projectName;
+            html = html + ' : ';
+            html = html + '</span>';
             html = html + element.file;
             html = html + ' ( 点击查看错误详情 ) ';
             html = html + '</div>';
@@ -517,13 +569,29 @@
           html = html + '</div><div class="area">';
           Object.keys(data[element].callOrigin).forEach(selement => {
             html = html + '<div class="card">';
+            html = html + '<span style="color:#e9eb0c;">';
+            html = html + data[element].callOrigin[selement].projectName;
+            html = html + ' : ';
+            html = html + '</span>';
             html = html + selement;
             html = html + ' : [ ';
-              const lineTemp = data[element].callOrigin[selement];
+              const lineTemp = data[element].callOrigin[selement].lines;
+              const httpRepo = data[element].callOrigin[selement].httpRepo || '';
               for(let i=0; i<lineTemp.length; i++){
-                html = html + lineTemp[i];
+                if(httpRepo){
+                  html = html + '<a href="';
+                  html = html + httpRepo;
+                  html = html + selement;
+                  html = html + '#L';
+                  html = html + lineTemp[i];
+                  html = html + '" target="_blank">';
+                  html = html + lineTemp[i];
+                  html = html + '</a>';
+                }else{
+                  html = html + lineTemp[i];
+                }
                 if(i<lineTemp.length-1){
-                  html = html + ', ';
+                  html = html + ' , ';
                 }
               }
             html = html + ' ] ';
@@ -556,13 +624,29 @@
             if (data[element][selement]) {
               Object.keys(data[element][selement].callOrigin).forEach(telement => {
                 html = html + '<div class="card">';
+                html = html + '<span style="color:#e9eb0c;">';
+                html = html + data[element][selement].callOrigin[telement].projectName;
+                html = html + ' : ';
+                html = html + '</span>';
                 html = html + telement;
                 html = html + ' : [ ';
-                  const lineTemp = data[element][selement].callOrigin[telement];
+                  const lineTemp = data[element][selement].callOrigin[telement].lines;
+                  const httpRepo = data[element][selement].callOrigin[telement].httpRepo || '';
                   for(let i=0; i<lineTemp.length; i++){
-                    html = html + lineTemp[i];
+                    if(httpRepo){
+                      html = html + '<a href="';
+                      html = html + httpRepo;
+                      html = html + telement;
+                      html = html + '#L';
+                      html = html + lineTemp[i];
+                      html = html + '" target="_blank">';
+                      html = html + lineTemp[i];
+                      html = html + '</a>';
+                    }else{
+                      html = html + lineTemp[i];
+                    }
                     if(i<lineTemp.length-1){
-                      html = html + ', ';
+                      html = html + ' , ';
                     }
                   }
                 html = html + ' ] ';
@@ -593,14 +677,33 @@
           html = html + ' ) ';
           html = html + '</div><div class="area">';
           data[element].callOrigin.forEach(selement => {
-            html = html + '<div class="card" data-f="';
-            html = html + element;
-            html = html + '" data-s="';
-            html = html + selement;
-            html = html + '" data-map="';
-            html = html + 'noUseMap';
-            html = html + '">';
-            html = html + selement;
+            html = html + '<div class="card">';
+            html = html + '<span style="color:#e9eb0c;">';  
+            html = html + selement.projectName;
+            html = html + ' : ';
+            html = html + '</span>';
+            html = html + selement.path;
+            html = html + ' : [ ';
+              const lineTemp = selement.lines;
+              const httpRepo = selement.httpRepo || '';
+              for(let i=0; i<lineTemp.length; i++){
+                if(httpRepo){
+                  html = html + '<a href="';
+                  html = html + httpRepo;
+                  html = html + selement.path;
+                  html = html + '#L';
+                  html = html + lineTemp[i];
+                  html = html + '" target="_blank">';
+                  html = html + lineTemp[i];
+                  html = html + '</a>';
+                }else{
+                  html = html + lineTemp[i];
+                }
+                if(i<lineTemp.length-1){
+                  html = html + ' , ';
+                }
+              }
+            html = html + ' ] ';
             html = html + '</div>';
           });
           html = html + '</div></div>';
