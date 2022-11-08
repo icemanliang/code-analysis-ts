@@ -1,3 +1,5 @@
+[![npm version](https://badge.fury.io/js/code-analysis-ts.svg)](https://www.npmjs.com/package/code-analysis-ts)
+[![Downloads](https://img.shields.io/npm/dm/code-analysis-ts.svg)](https://www.npmjs.com/package/code-analysis-ts)
 # code-analysis-ts
 
 [code-analysis-ts](https://www.npmjs.com/package/code-analysis-ts)是一款TS代码扫描分析工具，可用于生成代码分析报告，实现代码评分，代码告警，“脏”代码拦截等功能。支持CLI/API两种使用模式，通过npm script可以快速集成到业务CI自动化流程中。
@@ -34,6 +36,7 @@ module.exports = {
     blackApis: ['app.localStorage.set'],                              // 可选，需要标记的黑名单api，默认为空数组
     browserApis: ['window','document','history','location'],          // 可选，要分析的BrowserApi，默认为空数组
     reportDir: 'report',                                              // 可选，生成代码分析报告的目录，默认为report
+    reportTitle: 'Market代码分析报告',                                  // 可选，代码分析报告标题，默认为'代码分析报告'
     isScanVue: true,                                                  // 可选，是否要扫描分析vue中的ts代码，默认为false
     scorePlugin: 'default',                                           // 可选，评分插件: Function|'default'|null, default表示运行默认插件，null表示不评分
     thresholdScore: 90                                                // 可选，开启代码告警及阈值分数(0-100)，默认为null即关闭告警逻辑 (CLI模式生效)
@@ -71,6 +74,7 @@ async function scan() {
             blackApis: ['app.localStorage.set'],                          // 可选，需要标记的黑名单api，默认为空数组
             browserApis: ['window','document','history','location'],      // 可选，要分析的BrowserApi，默认为空数组
             reportDir: 'report',                                          // 可选，生成代码分析报告的目录，默认为report
+            reportTitle: 'Market代码分析报告',                              // 可选，代码分析报告标题，默认为'代码分析报告'
             isScanVue: true,                                              // 可选，是否要扫描分析vue中的ts代码，默认为false
             scorePlugin: 'default'                                        // 可选，评分插件: Function|'default'|null, default表示运行默认插件，null表示不评分
         });                                                                          

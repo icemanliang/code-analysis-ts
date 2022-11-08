@@ -1,9 +1,10 @@
 #!/usr/bin/env node
-const program = require('commander');                                       // 美化命令行交互
+const program = require('commander');                                       // 命令行交互
 const { execSync } = require('child_process');                              // 子进程操作
 const path = require('path');                                               // 路径操作
 const fs = require('fs');                                                   // 文件操作
-const chalk = require('chalk');                                             // 美化命令行输出
+const ora = require('ora');                                                 // 命令行
+const chalk = require('chalk');                                             // 美化输出
 const codeAnalysis = require(path.join(__dirname,'../lib/index'));          // 核心入口
 const { writeReport } = require(path.join(__dirname, '../lib/report'));     // 文件工具
 
@@ -49,11 +50,13 @@ program
                                         stdio: 'inherit',
                                     });
                                 }
+                                const spinner = ora(chalk.blue('analysis start')).start();
                                 try{
                                     // 分析代码
                                     const report = await codeAnalysis(config);
                                     // 输出分析报告
                                     writeReport(config.reportDir, report);
+                                    spinner.succeed(chalk.green('analysis success'));
                                     // 代码告警/正常退出
                                     if(config.scorePlugin && config.thresholdScore && typeof(config.thresholdScore) ==='number' && config.thresholdScore >0){
                                         if(report.scoreMap.score && report.scoreMap.score < config.thresholdScore){
@@ -64,7 +67,8 @@ program
                                                     console.log(chalk.yellow((index+1) + '. ' + element));
                                                 });
                                             }
-                                            process.exit(1);                                                                  // 触发告警错误并结束进程
+                                            console.log(chalk.red('=== 触发告警 ==='));                                        // 输出告警信息
+                                            process.exit(2);                                                                  // 触发告警错误并结束进程
                                         }else{
                                             console.log(chalk.green('\n' + '代码得分：' + report.scoreMap.score));              // 输出代码分数信息
                                             if(report.scoreMap.message.length >0){                                            // 输出代码建议信息
@@ -84,6 +88,7 @@ program
                                         }            
                                     }
                                 }catch(e){
+                                    spinner.fail(chalk.red('analysis fail'));
                                     console.log(chalk.red(e.stack));        // 输出错误信息
                                     process.exit(1);                        // 错误退出进程
                                 }

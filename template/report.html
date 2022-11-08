@@ -15,6 +15,7 @@
       .title{
         font-size: 30px;
         width: 600px;
+        display: flex;
       }
       .description {
         display: flex;
@@ -270,13 +271,24 @@
       .name:hover {
         cursor: default;
       }
+      #reportTitle {
+        max-width: 400px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+      #reportTime {
+        font-size:16px;
+        color:gray;
+        padding-top:15px;
+      }
     </style>
   </head>
   <body>
     <div class="header">
-      <div class="title">代码分析报告<span style="font-size:16px;color:gray;" id="reportTime"></span></div>
+      <div class="title"><div id="reportTitle"></div><div id="reportTime"></div></div>
       <div class="description">
-        <span style="color:blue;"">tips：</span> 红色字体表示黑名单API，( ) 中数字表示API调用次数，[ ] 中数字表示API所在文件代码行（若配置httpRepo可跳转）
+        <span style="color:blue;"">tips：</span> 红色字体表示黑名单API，( ) 中数字表示API调用次数，[ ] 中数字表示API所在文件代码行（配置httpRepo可跳转）
       </div>
     </div>
     <div class="main">
@@ -738,18 +750,24 @@
         }
       }
 
-      document.getElementById('reportTime').innerHTML = ' (' + report.analysisTime + ') ';
-      doApi();
-      doNoParse();
-      doType();
-      doBrowser();
-      doNoUse();
-      if(report.scoreMap){
-        doScore();
-      }else{
-        document.getElementById('scoreNum').style.display = 'none';
-        document.getElementById('scoreMessage').style.display = 'none';
+      function main() {
+        document.title = report.reportTitle || '代码分析报告';
+        document.getElementById('reportTitle').innerText = report.reportTitle || '代码分析报告';
+        document.getElementById('reportTime').innerText = ' (' + report.analysisTime + ') ';
+        doApi();
+        doNoParse();
+        doType();
+        doBrowser();
+        doNoUse();
+        if(report.scoreMap){
+          doScore();
+        }else{
+          document.getElementById('scoreNum').style.display = 'none';
+          document.getElementById('scoreMessage').style.display = 'none';
+        }
       }
+
+      main();
 
     </script>
   </body>
