@@ -67,8 +67,8 @@ program
                                                     console.log(chalk.yellow((index+1) + '. ' + element));
                                                 });
                                             }
-                                            console.log(chalk.red('=== 触发告警 ==='));                                        // 输出告警信息
-                                            process.exit(2);                                                                  // 触发告警错误并结束进程
+                                            console.log(chalk.red('\n' + '=== 触发告警 ===' + '\n'));                          // 输出告警信息
+                                            process.exit(1);                                                                  // 触发告警错误并结束进程
                                         }else{
                                             console.log(chalk.green('\n' + '代码得分：' + report.scoreMap.score));              // 输出代码分数信息
                                             if(report.scoreMap.message.length >0){                                            // 输出代码建议信息
