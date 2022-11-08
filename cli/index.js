@@ -43,7 +43,7 @@ program
                         if(!isCodePathError){
                             if(config && config.analysisTarget){
                                 // 如果分析报告目录已经存在，则先删除目录
-                                const reportPath =path.join(process.cwd(),`./${config.reportDir}`);
+                                const reportPath =path.join(process.cwd(),`./${config.reportDir || 'report'}`);
                                 const isReport =fs.existsSync(reportPath);
                                 if(isReport){
                                     execSync(`rm -rf ${reportPath}`, {
@@ -55,7 +55,7 @@ program
                                     // 分析代码
                                     const report = await codeAnalysis(config);
                                     // 输出分析报告
-                                    writeReport(config.reportDir, report);
+                                    writeReport(config.reportDir || 'report', report);
                                     spinner.succeed(chalk.green('analysis success'));
                                     // 代码告警/正常退出
                                     if(config.scorePlugin && config.thresholdScore && typeof(config.thresholdScore) ==='number' && config.thresholdScore >0){
@@ -102,7 +102,7 @@ program
                         console.log(chalk.red('error: scanSource参数选项必填属性不能为空'));
                     }
                 }else{
-                    console.log(chalk.red('error: 配置文件中必填配置项scanSource有误'))
+                    console.log(chalk.red('error: 配置文件中必填配置项scanSource不能为空'))
                 }
             }else{
                 console.log(chalk.red('error: 缺少analysis.config.js配置文件'));

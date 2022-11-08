@@ -5,7 +5,7 @@ const codeAnalysis = require(path.join(__dirname, '../lib/index'));      // 核�
 const analysis = async function(options){
     if(options){
         if(!options.scanSource || !Array.isArray(options.scanSource) || options.scanSource.length ==0){
-            Promise.reject(new Error('error: scanSource参数有误'))
+            Promise.reject(new Error('error: scanSource参数不能为空'))
             return;
         }
         let isParamsError = false;
