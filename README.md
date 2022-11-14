@@ -29,7 +29,7 @@ function getGitBranch() {                                             // 获取�
 module.exports = {
     scanSource: [{                                                    // 必须，待扫描源码的配置信息
         name: 'Market',                                                    // 必填，项目名称
-        path: ['src'],                                                     // 必填，需要扫描的文件路径
+        path: ['src'],                                                     // 必填，需要扫描的文件路径（基准路径为配置文件所在路径）
         format: null,                                                      // 可选, 文件路径格式化函数,默认为null,一般不需要配置
         httpRepo: `https://gitlab.xxx.com/xxx/-/blob/${getGitBranch()}/`   // 可选，项目gitlab/github url的访问前缀，用于点击行信息跳转，不填则不跳转
     }],                                                                 
@@ -68,7 +68,7 @@ async function scan() {
         const codeReport = await analysis({
             scanSource: [{                                                // 必须，待扫描源码的配置信息
                 name: 'Market',                                                // 必填，项目名称
-                path: ['src'],                                                 // 必填，需要扫描的文件路径
+                path: ['src'],                                                 // 必填，需要扫描的文件路径（基准路径为配置文件所在路径）
                 format: null,                                                  // 可选, 文件路径格式化函数,默认为null,一般不需要配置
                 httpRepo: `https://gitlab.xxx.com/xxx/-/blob/${xxx}/`          // 可选，项目gitlab/github url的访问前缀，用于点击行信息跳转，不填则不跳转
             }],                                                                 
