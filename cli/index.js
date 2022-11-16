@@ -1,12 +1,13 @@
 #!/usr/bin/env node
-const program = require('commander');                                       // 命令行交互
-const { execSync } = require('child_process');                              // 子进程操作
-const path = require('path');                                               // 路径操作
-const fs = require('fs');                                                   // 文件操作
-const ora = require('ora');                                                 // 命令行
-const chalk = require('chalk');                                             // 美化输出
-const codeAnalysis = require(path.join(__dirname,'../lib/index'));          // 核心入口
-const { writeReport } = require(path.join(__dirname, '../lib/report'));     // 文件工具
+const program = require('commander');                                                           // 命令行交互
+const path = require('path');                                                                   // 路径操作
+const fs = require('fs');                                                                       // 文件操作
+const ora = require('ora');                                                                     // 命令行
+const chalk = require('chalk');                                                                 // 美化输出
+const { writeReport } = require(path.join(__dirname, '../lib/report'));                         // 报告模块
+const { REPORTDEFAULTDIR, VUETEMPTSDIR } = require(path.join(__dirname, '../lib/constant'));    // 常量模块
+const { mkDir, rmDir } = require(path.join(__dirname, '../lib/file'));                          // 文件工具
+const codeAnalysis = require(path.join(__dirname,'../lib/index'));                              // 分析入口
 
 program
     .command('analysis')
@@ -42,20 +43,22 @@ program
                     if(!isParamsError){
                         if(!isCodePathError){
                             if(config && config.analysisTarget){
-                                // 如果分析报告目录已经存在，则先删除目录
-                                const reportPath =path.join(process.cwd(),`./${config.reportDir || 'report'}`);
-                                const isReport =fs.existsSync(reportPath);
-                                if(isReport){
-                                    execSync(`rm -rf ${reportPath}`, {
-                                        stdio: 'inherit',
-                                    });
-                                }
                                 const spinner = ora(chalk.blue('analysis start')).start();
                                 try{
+                                    // 如果分析报告目录已经存在，则先删除目录
+                                    rmDir(config.reportDir || REPORTDEFAULTDIR);
+                                    // 如果temp目录已经存在，则先删除目录
+                                    rmDir(VUETEMPTSDIR);
+                                    // 如果需要扫描vue文件，创建temp目录
+                                    if(config.isScanVue){
+                                        mkDir(VUETEMPTSDIR);
+                                    }
                                     // 分析代码
                                     const report = await codeAnalysis(config);
                                     // 输出分析报告
                                     writeReport(config.reportDir || 'report', report);
+                                    // 删除temp目录
+                                    rmDir(VUETEMPTSDIR);
                                     spinner.succeed(chalk.green('analysis success'));
                                     // 代码告警/正常退出
                                     if(config.scorePlugin && config.thresholdScore && typeof(config.thresholdScore) ==='number' && config.thresholdScore >0){
@@ -88,6 +91,8 @@ program
                                         }            
                                     }
                                 }catch(e){
+                                    // 删除temp目录
+                                    rmDir(VUETEMPTSDIR);
                                     spinner.fail(chalk.red('analysis fail'));
                                     console.log(chalk.red(e.stack));        // 输出错误信息
                                     process.exit(1);                        // 错误退出进程

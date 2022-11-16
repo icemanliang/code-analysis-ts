@@ -14,7 +14,7 @@
       }
       .title{
         font-size: 26px;
-        width: 600px;
+        width: 718px;
         display: flex;
       }
       .description {
@@ -73,11 +73,13 @@
       .owner {
         color: #000000;
         display: flex;
-        width: 280px;
-        min-width: 280px;
+        width: 400px;
+        min-width: 400px;
         padding: 4px;
         margin-right: 10px;
         height: 26px;
+        white-space: nowrap;
+        overflow-x: scroll;
       }
       .owner:hover {
         cursor: default;
@@ -197,7 +199,7 @@
         white-space: nowrap;
       }
       .card:hover {
-        cursor: pointer;
+        cursor: default;
       }
       .noParse {
         margin-top: 10px;
@@ -272,15 +274,25 @@
         cursor: default;
       }
       #reportTitle {
-        max-width: 400px;
+        max-width: 500px;
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
       }
       #reportTime {
+        margin-left:5px;
         font-size:16px;
         color:gray;
-        padding-top:15px;
+        padding-top:12px;
+      }
+      .asStyle {
+        color: #3e3cea;
+        margin-left: 5px;
+        margin-top: -1px;
+        font-weight: bold;
+      }
+      .httpReopBtn:hover{
+        cursor: pointer;
       }
     </style>
   </head>
@@ -288,7 +300,7 @@
     <div class="header">
       <div class="title"><div id="reportTitle"></div><div id="reportTime"></div></div>
       <div class="description">
-        <span style="color:blue;"">tips：</span> 红色字体表示黑名单API，( ) 中数字表示API调用次数，[ ] 中数字表示API所在文件代码行（配置httpRepo可跳转）
+        <span style="color:green;">tips：</span>红色字体表示黑名单API，<span style="color:green;margin-right:2px;">( )</span>中数字表示API调用次数，<span style="color:green;margin-right:2px;">-> </span>表示存在AS映射，<span style="color:green;margin-right:2px;">[ ]</span>中数字表示API所在文件代码行（配置httpRepo可跳转）
       </div>
     </div>
     <div class="main">
@@ -363,7 +375,6 @@
     </div>
 
     <script src="./index.js"></script>
-    <script src="./jquery.min.js"></script>
     <script>
       // 隐藏蒙层
       function api_hide() {
@@ -403,20 +414,26 @@
             html = html + ' ( ';
             html = html + data[element].callNum;
             html = html + ' ) ';
+            if(data[element].callOrigin){
+              html = html + '<span class="asStyle">';
+              html = html + '-> ';
+              html = html + data[element].callOrigin;
+              html = html + '</span>';
+            }
             html = html + '</div><div class="area">';
-            Object.keys(data[element].callOrigin).forEach(pelement => {
+            Object.keys(data[element].callFiles).forEach(pelement => {
               html = html + '<div class="card">';
               html = html + '<span style="color:#e9eb0c;">';
-              html = html + data[element].callOrigin[pelement].projectName;
+              html = html + data[element].callFiles[pelement].projectName;
               html = html + ' : ';
               html = html + '</span>';
               html = html + pelement;
               html = html + ' : [ ';
-                const lineTemp = data[element].callOrigin[pelement].lines;
-                const httpRepo = data[element].callOrigin[pelement].httpRepo || '';
+                const lineTemp = data[element].callFiles[pelement].lines;
+                const httpRepo = data[element].callFiles[pelement].httpRepo || '';
                 for(let i=0; i<lineTemp.length; i++){
                   if(httpRepo){
-                    html = html + '<a href="';
+                    html = html + '<a class="httpReopBtn" href="';
                     html = html + httpRepo;
                     html = html + pelement;
                     html = html + '#L';
@@ -452,20 +469,26 @@
                   html = html + ' ( ';
                   html = html + data[element][selement].children[telement].callNum;
                   html = html + ' ) ';
+                  if(data[element][selement].children[telement].callOrigin){
+                    html = html + '<span class="asStyle">';
+                    html = html + '-> ';
+                    html = html + data[element][selement].children[telement].callOrigin;
+                    html = html + '</span>';
+                  }
                   html = html + '</div><div class="area">';
-                  Object.keys(data[element][selement].children[telement].callOrigin).forEach(pelement => {
+                  Object.keys(data[element][selement].children[telement].callFiles).forEach(pelement => {
                     html = html + '<div class="card">';
                     html = html + '<span style="color:#e9eb0c;">';
-                    html = html + data[element][selement].children[telement].callOrigin[pelement].projectName;
+                    html = html + data[element][selement].children[telement].callFiles[pelement].projectName;
                     html = html + ' : ';
                     html = html + '</span>';
                     html = html + pelement;
                     html = html + ' : [ ';
-                    const lineTemp = data[element][selement].children[telement].callOrigin[pelement].lines;
-                    const httpRepo = data[element][selement].children[telement].callOrigin[pelement].httpRepo || '';
+                    const lineTemp = data[element][selement].children[telement].callFiles[pelement].lines;
+                    const httpRepo = data[element][selement].children[telement].callFiles[pelement].httpRepo || '';
                     for(let i=0; i<lineTemp.length; i++){
                       if(httpRepo){
-                        html = html + '<a href="';
+                        html = html + '<a class="httpReopBtn" href="';
                         html = html + httpRepo;
                         html = html + pelement;
                         html = html + '#L';
@@ -497,20 +520,26 @@
                 html = html + ' ( ';
                 html = html + data[element][selement].callNum;
                 html = html + ' ) ';
+                if(data[element][selement].callOrigin){
+                  html = html + '<span class="asStyle">';
+                  html = html + '-> ';
+                  html = html + data[element][selement].callOrigin;
+                  html = html + '</span>';
+                }
                 html = html + '</div><div class="area">';
-                Object.keys(data[element][selement].callOrigin).forEach(pelement => {
+                Object.keys(data[element][selement].callFiles).forEach(pelement => {
                   html = html + '<div class="card">';
                   html = html + '<span style="color:#e9eb0c;">';
-                  html = html + data[element][selement].callOrigin[pelement].projectName;
+                  html = html + data[element][selement].callFiles[pelement].projectName;
                   html = html + ' : ';
                   html = html + '</span>';
                   html = html + pelement;
                   html = html + ' : [ ';
-                    const lineTemp = data[element][selement].callOrigin[pelement].lines;
-                    const httpRepo = data[element][selement].callOrigin[pelement].httpRepo || '';
+                    const lineTemp = data[element][selement].callFiles[pelement].lines;
+                    const httpRepo = data[element][selement].callFiles[pelement].httpRepo || '';
                     for(let i=0; i<lineTemp.length; i++){
                       if(httpRepo){
-                        html = html + '<a href="';
+                        html = html + '<a class="httpReopBtn" href="';
                         html = html + httpRepo;
                         html = html + pelement;
                         html = html + '#L';
@@ -578,20 +607,26 @@
           html = html + ' ( ';
           html = html + data[element].callNum;
           html = html + ' ) ';
+          if(data[element].callOrigin){
+            html = html + '<span class="asStyle">';
+            html = html + '-> ';
+            html = html + data[element].callOrigin;
+            html = html + '</span>';
+          }
           html = html + '</div><div class="area">';
-          Object.keys(data[element].callOrigin).forEach(selement => {
+          Object.keys(data[element].callFiles).forEach(selement => {
             html = html + '<div class="card">';
             html = html + '<span style="color:#e9eb0c;">';
-            html = html + data[element].callOrigin[selement].projectName;
+            html = html + data[element].callFiles[selement].projectName;
             html = html + ' : ';
             html = html + '</span>';
             html = html + selement;
             html = html + ' : [ ';
-              const lineTemp = data[element].callOrigin[selement].lines;
-              const httpRepo = data[element].callOrigin[selement].httpRepo || '';
+              const lineTemp = data[element].callFiles[selement].lines;
+              const httpRepo = data[element].callFiles[selement].httpRepo || '';
               for(let i=0; i<lineTemp.length; i++){
                 if(httpRepo){
-                  html = html + '<a href="';
+                  html = html + '<a class="httpReopBtn" href="';
                   html = html + httpRepo;
                   html = html + selement;
                   html = html + '#L';
@@ -634,19 +669,19 @@
             html = html + ' ) ';
             html = html + '</div><div class="area">';
             if (data[element][selement]) {
-              Object.keys(data[element][selement].callOrigin).forEach(telement => {
+              Object.keys(data[element][selement].callFiles).forEach(telement => {
                 html = html + '<div class="card">';
                 html = html + '<span style="color:#e9eb0c;">';
-                html = html + data[element][selement].callOrigin[telement].projectName;
+                html = html + data[element][selement].callFiles[telement].projectName;
                 html = html + ' : ';
                 html = html + '</span>';
                 html = html + telement;
                 html = html + ' : [ ';
-                  const lineTemp = data[element][selement].callOrigin[telement].lines;
-                  const httpRepo = data[element][selement].callOrigin[telement].httpRepo || '';
+                  const lineTemp = data[element][selement].callFiles[telement].lines;
+                  const httpRepo = data[element][selement].callFiles[telement].httpRepo || '';
                   for(let i=0; i<lineTemp.length; i++){
                     if(httpRepo){
-                      html = html + '<a href="';
+                      html = html + '<a class="httpReopBtn" href="';
                       html = html + httpRepo;
                       html = html + telement;
                       html = html + '#L';
@@ -687,8 +722,14 @@
           html = html + ' ( ';
           html = html + data[element].callNum;
           html = html + ' ) ';
+          if(data[element].callOrigin){
+            html = html + '<span class="asStyle">';
+            html = html + '-> ';
+            html = html + data[element].callOrigin;
+            html = html + '</span>';
+          }
           html = html + '</div><div class="area">';
-          data[element].callOrigin.forEach(selement => {
+          data[element].callFiles.forEach(selement => {
             html = html + '<div class="card">';
             html = html + '<span style="color:#e9eb0c;">';  
             html = html + selement.projectName;
@@ -700,7 +741,7 @@
               const httpRepo = selement.httpRepo || '';
               for(let i=0; i<lineTemp.length; i++){
                 if(httpRepo){
-                  html = html + '<a href="';
+                  html = html + '<a class="httpReopBtn" href="';
                   html = html + httpRepo;
                   html = html + selement.path;
                   html = html + '#L';

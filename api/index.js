@@ -1,6 +1,8 @@
-const fs = require('fs');                                                // 文件操作
-const path = require('path');                                            // 路径操作
-const codeAnalysis = require(path.join(__dirname, '../lib/index'));      // 核心入口
+const fs = require('fs');                                                       // 文件操作
+const path = require('path');                                                   // 路径操作
+const { VUETEMPTSDIR } = require(path.join(__dirname, '../lib/constant'));      // 常量模块
+const { mkDir, rmDir } = require(path.join(__dirname, '../lib/file'));          // 文件工具
+const codeAnalysis = require(path.join(__dirname, '../lib/index'));             // 分析入口
 
 const analysis = async function(options){
     if(options){
@@ -46,7 +48,16 @@ const analysis = async function(options){
         return;
     }
     try{
+        // 如果temp目录已经存在，则先删除目录
+        rmDir(VUETEMPTSDIR);
+        // 如果需要扫描vue文件，创建temp目录
+        if(config.isScanVue){
+            mkDir(VUETEMPTSDIR);
+        }
         const report = await codeAnalysis(options);
+        // 删除temp目录
+        rmDir(VUETEMPTSDIR);
+        // 返回结果
         return Promise.resolve(report);
     }catch(e){
         return Promise.reject(e.stack);
