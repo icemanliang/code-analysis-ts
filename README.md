@@ -101,7 +101,7 @@ exports.myScoreDeal = function (codeObj){                           // 入参是
         apiMap,                                                     // 引入api分析结果
         typeMap,                                                    // 引入Type分析结果
         noUseMap,                                                   // 引入但未调用分析结果
-        parseErrorFiles,                                            // 解析失败文件分析结果
+        parseErrorInfos,                                            // 解析失败文件分析结果
         browserApiMap                                               // browserapi分析结果
     } = codeObj;
     

@@ -384,9 +384,9 @@
       // 展示蒙层
       function parse_show(event) {
         const module = event.target.getAttribute('data-f');
-        const stackMessage = report.parseErrorFiles[module].stack;
+        const stackMessage = report.parseErrorInfos[module].stack;
         noParseDetails(stackMessage);
-        document.getElementsByClassName('api_detail_title')[0].innerText = report.parseErrorFiles[module].file;
+        document.getElementsByClassName('api_detail_title')[0].innerText = report.parseErrorInfos[module].file;
         document.getElementById('api_detail_grey').style.display = 'block';
       }
       // 点击解析失败详情处理
@@ -573,9 +573,9 @@
       //  处理noParseMap
       function doNoParse() {
         var html = '';
-        if(report.parseErrorFiles.length >0){
+        if(report.parseErrorInfos.length >0){
           html = html + '<div class="second"><div class="owner">-</div><div class="area">';
-          report.parseErrorFiles.forEach((element, index) => {
+          report.parseErrorInfos.forEach((element, index) => {
             html = html + '<div class="gray-card';
             html = html + '" onclick="parse_show(event)" data-f="';
             html = html + index;
