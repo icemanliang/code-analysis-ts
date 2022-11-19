@@ -1,38 +1,45 @@
-exports.typePlugin = function (CodeAnalysisObj) {
-    // 副作用
-    CodeAnalysisObj.typeMap = {};
+exports.typePlugin = function (analysisContext) {
+    const mapName = 'typeMap';
+    // 在分析实例上下文挂载副作用
+    analysisContext[mapName] = {};
 
-    function findType (node, depth, filepath, projectName, httpRepo, line) {
+    function isTypeCheck (context, tsCompiler, node, depth, apiName, matchImportItem, filePath, projectName, httpRepo, line) {
         try{
-            if (node.typeName && node.typeName.escapedText && node.typeName.escapedText == element.name) {
-                // console.log(node.typeName.escapedText);
-                if (!that.typeMap[element.name]) {
-                    that.typeMap[element.name] = {};
-                    that.typeMap[element.name].callNum = 1;
-                    that.typeMap[element.name].callOrigin = element.origin;
-                    that.typeMap[element.name].callFiles = {};
-                    that.typeMap[element.name].callFiles[filepath] = {};
-                    that.typeMap[element.name].callFiles[filepath].projectName = projectName;
-                    that.typeMap[element.name].callFiles[filepath].httpRepo = httpRepo;
-                    that.typeMap[element.name].callFiles[filepath].lines = [];
-                    that.typeMap[element.name].callFiles[filepath].lines.push(line);
+            if(node.parent && tsCompiler.isTypeReferenceNode(node.parent)){                        // 命中Type检测
+                if (!context[mapName][apiName]) {
+                    context[mapName][apiName] = {};
+                    context[mapName][apiName].callNum = 1;
+                    context[mapName][apiName].callOrigin = matchImportItem.origin;
+                    context[mapName][apiName].callFiles = {};
+                    context[mapName][apiName].callFiles[filePath] = {};
+                    context[mapName][apiName].callFiles[filePath].projectName = projectName;
+                    context[mapName][apiName].callFiles[filePath].httpRepo = httpRepo;
+                    context[mapName][apiName].callFiles[filePath].lines = [];
+                    context[mapName][apiName].callFiles[filePath].lines.push(line);
                 } else {
-                    that.typeMap[element.name].callNum++;
-                    if (!Object.keys(that.typeMap[element.name].callFiles).includes(filepath)) {
-                        that.typeMap[element.name].callFiles[filepath] = {};
-                        that.typeMap[element.name].callFiles[filepath].projectName = projectName;
-                        that.typeMap[element.name].callFiles[filepath].httpRepo = httpRepo;
-                        that.typeMap[element.name].callFiles[filepath].lines = [];
-                        that.typeMap[element.name].callFiles[filepath].lines.push(line);
+                    context[mapName][apiName].callNum++;
+                    if (!Object.keys(context[mapName][apiName].callFiles).includes(filePath)) {
+                        context[mapName][apiName].callFiles[filePath] = {};
+                        context[mapName][apiName].callFiles[filePath].projectName = projectName;
+                        context[mapName][apiName].callFiles[filePath].httpRepo = httpRepo;
+                        context[mapName][apiName].callFiles[filePath].lines = [];
+                        context[mapName][apiName].callFiles[filePath].lines.push(line);
                     }else{
-                        that.typeMap[element.name].callFiles[filepath].lines.push(line);
+                        context[mapName][apiName].callFiles[filePath].lines.push(line);
                     }
                 }
+                return true;                                                                    // true: 命中规则, 终止执行后序插件           
             }
+            return false;                                                                       // false: 未命中检测逻辑, 继续执行后序插件
         }catch(e){
             console.log(e);
+            return false;                                                                       // false: 插件执行报错, 继续执行后序插件
         }
     }
-    // 返回分析node节点的纯函数
-    return findType;
+
+    // 返回分析Node节点的函数
+    return {
+        mapName: mapName,
+        checkFun: isTypeCheck
+    };
 }

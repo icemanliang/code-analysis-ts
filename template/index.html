@@ -204,7 +204,7 @@
       .noParse {
         margin-top: 10px;
       }
-      #api, #browserApiMap, #typeArea, #noUseMap, #noParse {
+      #api, #browserMap, #typeArea, #noUseMap, #noParse {
         padding-top: 10px;
       }
       .noContent{
@@ -319,7 +319,7 @@
           <div class="name">Browser API调用频次及文件分布:</div>
         </div>
         <div class="line"></div>
-        <div id="browserApiMap">
+        <div id="browserMap">
       </div>
         <!-- -->
       </div>
@@ -653,10 +653,10 @@
         document.getElementById('typeArea').innerHTML = html;
       }
 
-      //  处理browserApiMap
+      //  处理browserMap
       function doBrowser() {
         var html = '';
-        var data = report.browserApiMap;
+        var data = report.browserMap;
         Object.keys(data).forEach(element => {
           html = html + '<div class="first">';
           Object.keys(data[element]).forEach(selement => {
@@ -705,67 +705,11 @@
           html = html + '</div>';
         });
         if(html ==''){
-          document.getElementById('browserApiMap').innerHTML ='<div class="noContent">-</div>';
+          document.getElementById('browserMap').innerHTML ='<div class="noContent">-</div>';
           return;
         }
         // console.log(html);
-        document.getElementById('browserApiMap').innerHTML = html;
-      }
-
-      //  处理noUseMap
-      function doNoUse() {
-        var html = '';
-        var data = report.noUseMap;
-        Object.keys(data).forEach(element => {
-          html = html + '<div class="second"><div class="owner">';
-          html = html + element;
-          html = html + ' ( ';
-          html = html + data[element].callNum;
-          html = html + ' ) ';
-          if(data[element].callOrigin){
-            html = html + '<span class="asStyle">';
-            html = html + '-> ';
-            html = html + data[element].callOrigin;
-            html = html + '</span>';
-          }
-          html = html + '</div><div class="area">';
-          data[element].callFiles.forEach(selement => {
-            html = html + '<div class="card">';
-            html = html + '<span style="color:#e9eb0c;">';  
-            html = html + selement.projectName;
-            html = html + ' : ';
-            html = html + '</span>';
-            html = html + selement.path;
-            html = html + ' : [ ';
-              const lineTemp = selement.lines;
-              const httpRepo = selement.httpRepo || '';
-              for(let i=0; i<lineTemp.length; i++){
-                if(httpRepo){
-                  html = html + '<a class="httpReopBtn" href="';
-                  html = html + httpRepo;
-                  html = html + selement.path;
-                  html = html + '#L';
-                  html = html + lineTemp[i];
-                  html = html + '" target="_blank">';
-                  html = html + lineTemp[i];
-                  html = html + '</a>';
-                }else{
-                  html = html + lineTemp[i];
-                }
-                if(i<lineTemp.length-1){
-                  html = html + ' , ';
-                }
-              }
-            html = html + ' ] ';
-            html = html + '</div>';
-          });
-          html = html + '</div></div>';
-        });
-        if(html ==''){
-          document.getElementById('noUseMap').innerHTML ='<div class="noContent">-</div>';
-          return;
-        }
-        document.getElementById('noUseMap').innerHTML = html;
+        document.getElementById('browserMap').innerHTML = html;
       }
 
       // 展示分数及代码建议
@@ -799,7 +743,6 @@
         doNoParse();
         doType();
         doBrowser();
-        doNoUse();
         if(report.scoreMap){
           doScore();
         }else{
