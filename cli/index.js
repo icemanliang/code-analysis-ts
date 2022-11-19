@@ -4,7 +4,7 @@ const path = require('path');                                                   
 const fs = require('fs');                                                                       // 文件操作
 const ora = require('ora');                                                                     // 命令行
 const chalk = require('chalk');                                                                 // 美化输出
-const { writeReport } = require(path.join(__dirname, '../lib/report'));                         // 报告模块
+const { writeReport, writeDiagnosisReport } = require(path.join(__dirname, '../lib/report'));   // 报告模块
 const { REPORTDEFAULTDIR, VUETEMPTSDIR } = require(path.join(__dirname, '../lib/constant'));    // 常量模块
 const { mkDir, rmDir } = require(path.join(__dirname, '../lib/file'));                          // 文件工具
 const codeAnalysis = require(path.join(__dirname,'../lib/index'));                              // 分析入口
@@ -54,15 +54,17 @@ program
                                         mkDir(VUETEMPTSDIR);
                                     }
                                     // 分析代码
-                                    const report = await codeAnalysis(config);
+                                    const { report, diagnosisInfos } = await codeAnalysis(config);
                                     // 输出分析报告
                                     writeReport(config.reportDir || 'report', report);
+                                    // 输出诊断报告
+                                    writeDiagnosisReport(config.reportDir || 'report', diagnosisInfos);
                                     // 删除temp目录
                                     rmDir(VUETEMPTSDIR);
                                     spinner.succeed(chalk.green('analysis success'));
                                     // 代码告警/正常退出
-                                    if(config.scorePlugin && config.thresholdScore && typeof(config.thresholdScore) ==='number' && config.thresholdScore >0){
-                                        if(report.scoreMap.score && report.scoreMap.score < config.thresholdScore){
+                                    if(config.scorePlugin && config.alarmThreshold && typeof(config.alarmThreshold) ==='number' && config.alarmThreshold >0){
+                                        if(report.scoreMap.score && report.scoreMap.score < config.alarmThreshold){
                                             console.log(chalk.red('\n' + '代码得分：' + report.scoreMap.score + ', 不合格'));      // 输出代码分数信息
                                             if(report.scoreMap.message.length >0){                                              // 输出代码建议信息
                                                 console.log(chalk.yellow('\n' + '优化建议：'));                           

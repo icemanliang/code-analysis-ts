@@ -29,8 +29,18 @@ exports.defaultPlugin = function (analysisContext) {
             }
             return true;                                                                                 // true: 命中规则, 终止执行后序插件
         }catch(e){
-            console.log(e);
-            return false;                                                                                // false: 插件执行报错, 继续执行后序插件
+            // console.log(e);
+            const info = {
+                projectName: projectName,
+                matchImportItem: matchImportItem,
+                apiName: apiName,
+                httpRepo: httpRepo + filePath + '#L' + line,
+                file: filePath,
+                line: line,
+                stack: e.stack
+            };
+            context.diagnosisInfos.push(info);
+            return false;                                                                               // false: 插件执行报错, 继续执行后序插件
         }
     }
 

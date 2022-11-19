@@ -54,11 +54,14 @@ const analysis = async function(options){
         if(config.isScanVue){
             mkDir(VUETEMPTSDIR);
         }
-        const report = await codeAnalysis(options);
+        const { report, diagnosisInfos } = await codeAnalysis(options);
         // 删除temp目录
         rmDir(VUETEMPTSDIR);
         // 返回结果
-        return Promise.resolve(report);
+        return Promise.resolve({
+            report: report, 
+            diagnosisInfos: diagnosisInfos
+        });
     }catch(e){
         return Promise.reject(e.stack);
     }

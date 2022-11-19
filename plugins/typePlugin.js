@@ -32,7 +32,17 @@ exports.typePlugin = function (analysisContext) {
             }
             return false;                                                                       // false: 未命中检测逻辑, 继续执行后序插件
         }catch(e){
-            console.log(e);
+            // console.log(e);
+            const info = {
+                projectName: projectName,
+                matchImportItem: matchImportItem,
+                apiName: apiName,
+                httpRepo: httpRepo + filePath + '#L' + line,
+                file: filePath,
+                line: line,
+                stack: e.stack
+            };
+            context.diagnosisInfos.push(info);
             return false;                                                                       // false: 插件执行报错, 继续执行后序插件
         }
     }
