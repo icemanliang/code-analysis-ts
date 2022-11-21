@@ -51,7 +51,7 @@ const analysis = async function(options){
         // 如果temp目录已经存在，则先删除目录
         rmDir(VUETEMPTSDIR);
         // 如果需要扫描vue文件，创建temp目录
-        if(config.isScanVue){
+        if(options.isScanVue){
             mkDir(VUETEMPTSDIR);
         }
         const { report, diagnosisInfos } = await codeAnalysis(options);
