@@ -42,7 +42,7 @@ exports.typePlugin = function (analysisContext) {
                 line: line,
                 stack: e.stack
             };
-            context.diagnosisInfos.push(info);
+            context.addDiagnosisInfo(info);
             return false;                                                                       // false: 插件执行报错, 继续执行后序插件
         }
     }

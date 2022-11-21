@@ -2,7 +2,6 @@
 const program = require('commander');                                                           // 命令行交互
 const path = require('path');                                                                   // 路径操作
 const fs = require('fs');                                                                       // 文件操作
-const ora = require('ora');                                                                     // 命令行
 const chalk = require('chalk');                                                                 // 美化输出
 const { writeReport, writeDiagnosisReport } = require(path.join(__dirname, '../lib/report'));   // 报告模块
 const { REPORTDEFAULTDIR, VUETEMPTSDIR } = require(path.join(__dirname, '../lib/constant'));    // 常量模块
@@ -43,7 +42,6 @@ program
                     if(!isParamsError){
                         if(!isCodePathError){
                             if(config && config.analysisTarget){
-                                const spinner = ora(chalk.blue('analysis start')).start();
                                 try{
                                     // 如果分析报告目录已经存在，则先删除目录
                                     rmDir(config.reportDir || REPORTDEFAULTDIR);
@@ -61,7 +59,6 @@ program
                                     writeDiagnosisReport(config.reportDir || 'report', diagnosisInfos);
                                     // 删除temp目录
                                     rmDir(VUETEMPTSDIR);
-                                    spinner.succeed(chalk.green('analysis success'));
                                     // 代码告警/正常退出
                                     if(config.scorePlugin && config.alarmThreshold && typeof(config.alarmThreshold) ==='number' && config.alarmThreshold >0){
                                         if(report.scoreMap.score && report.scoreMap.score < config.alarmThreshold){
@@ -95,7 +92,6 @@ program
                                 }catch(e){
                                     // 删除temp目录
                                     rmDir(VUETEMPTSDIR);
-                                    spinner.fail(chalk.red('analysis fail'));
                                     console.log(chalk.red(e.stack));        // 输出错误信息
                                     process.exit(1);                        // 错误退出进程
                                 }
