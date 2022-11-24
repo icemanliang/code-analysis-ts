@@ -19,8 +19,11 @@ const { execSync } = require('child_process');                        // 子进�
 const DefaultBranch = 'master';                                       // 默认分支常量
 function getGitBranch() {                                             // 获取当然分支
     try{
-        const res = execSync('git branch');
-        return res.toString("utf8").replace('*','').trim();
+        const branchName = execSync('git symbolic-ref --short -q HEAD', {
+            encoding: 'utf8'
+        }).trim();
+        // console.log(branchName);
+        return branchName;
     }catch(e){
         return DefaultBranch;
     }
@@ -62,7 +65,20 @@ $ yarn analysis
 ### 2. api
 
 ```javascript
-const analysis = require('code-analysis-ts');
+const analysis = require('code-analysis-ts');                                   // 代码分析包
+const { execSync } = require('child_process');                                  // 子进程操作
+const DefaultBranch = 'master';                                                 // 默认分支常量
+function getGitBranch() {                                                       // 获取当然分支
+    try{
+        const branchName = execSync('git symbolic-ref --short -q HEAD', {
+            encoding: 'utf8'
+        }).trim();
+        // console.log(branchName);
+        return branchName;
+    }catch(e){
+        return DefaultBranch;
+    }
+}
 
 async function scan() {
     try{
@@ -71,7 +87,7 @@ async function scan() {
                 name: 'Market',                                                    // 必填，项目名称
                 path: ['src'],                                                     // 必填，需要扫描的文件路径（基准路径为配置文件所在路径）
                 format: null,                                                      // 可选, 文件路径格式化函数,默认为null,一般不需要配置
-                httpRepo: `https://gitlab.xxx.com/xxx/-/blob/${xxx}/`              // 可选，项目gitlab/github url的访问前缀，用于点击行信息跳转，不填则不跳转
+                httpRepo: `https://gitlab.xxx.com/xxx/-/blob/${getGitBranch()}/`   // 可选，项目gitlab/github url的访问前缀，用于点击行信息跳转，不填则不跳转
             }],                                                                 
             analysisTarget: 'framework',                                      // 必须，要分析的目标依赖名
             analysisPlugins: [],                                              // 可选，自定义分析插件，默认为空数组，一般不需要配置
@@ -150,3 +166,6 @@ module.exports = {
 
 ## diagnosisInfos诊断日志说明
 诊断日志是在代码分析过程中插件及关键节点产生的错误信息记录，可以帮助开发者调试自定义插件，快速定位代码文件，代码行，AST节点等相关错误信息。
+
+## vue_temp_ts_dir目录是什么
+如果开启了扫描Vue中TS的配置开关，工具会提取Vue中的TS片段进行中转TS处理，该目录是temp临时目录，会在分析结束销毁。
