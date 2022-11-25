@@ -33,8 +33,8 @@ exports.browserPlugin = function (analysisContext) {
             const info = {
                 projectName: projectName,
                 apiName: apiName,
-                httpRepo: httpRepo + filePath + '#L' + line,
-                file: filePath,
+                httpRepo: httpRepo + filePath.split('&')[1] + '#L' + line,
+                file: filePath.split('&')[1],
                 line: line,
                 stack: e.stack
             };
@@ -46,6 +46,7 @@ exports.browserPlugin = function (analysisContext) {
     // 返回分析Node节点的函数
     return {
         mapName: mapName,
-        checkFun: isBrowserCheck
+        checkFun: isBrowserCheck,
+        afterHook: null
     };
 }

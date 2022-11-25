@@ -81,7 +81,7 @@ program
                                             }
                                         }
                                     }else if(config.scorePlugin){
-                                        console.log(chalk.green('\n' + '代码得分：' + report.scoreMap.score + '\n'));          // 输出代码分数信息
+                                        console.log(chalk.green('\n' + '代码得分：' + report.scoreMap.score));          // 输出代码分数信息
                                         if(report.scoreMap.message.length >0){                                               // 输出代码建议信息
                                             console.log(chalk.yellow('\n' + '优化建议：'));                           
                                             report.scoreMap.message.forEach((element, index) => {

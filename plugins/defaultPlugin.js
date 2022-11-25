@@ -34,8 +34,8 @@ exports.defaultPlugin = function (analysisContext) {
                 projectName: projectName,
                 matchImportItem: matchImportItem,
                 apiName: apiName,
-                httpRepo: httpRepo + filePath + '#L' + line,
-                file: filePath,
+                httpRepo: httpRepo + filePath.split('&')[1] + '#L' + line,
+                file: filePath.split('&')[1],
                 line: line,
                 stack: e.stack
             };
@@ -47,6 +47,7 @@ exports.defaultPlugin = function (analysisContext) {
     // 返回分析Node节点的函数
     return {
         mapName: mapName,
-        checkFun: isApiCheck
+        checkFun: isApiCheck,
+        afterHook: null
     };
 }

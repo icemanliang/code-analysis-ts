@@ -311,7 +311,7 @@
           <!-- -->
         </div>
       </div>
-      <!--typeArea -->
+      <!--typeMap -->
       <div class="main_area">
         <div class="api_area">
           <div class="name">Type APIS：</div>
@@ -348,6 +348,16 @@
         </div>
         <div class="line"></div>
         <div id="parseErrorInfos">
+          <!-- -->
+        </div>
+      </div>
+      <!--versionMap -->
+      <div class="main_area main_area_bottom" id="versionArea">
+        <div class="api_area">
+          <div class="name" style="color:rgb(13, 52, 226);">依赖版本：</div>
+        </div>
+        <div class="line"></div>
+        <div id="versionMap">
           <!-- -->
         </div>
       </div>
@@ -395,7 +405,36 @@
         html = html + '</div>';
         document.getElementById('parse_error_detail').innerHTML = html;
       }
-      //  处理parseErrorInfos
+      // 处理版本依赖渲染
+      function versionRender() {
+        if(report.versionMap && Object.keys(report.versionMap).length>0){
+          var data = report.versionMap;
+          var html = '';
+          Object.keys(data).forEach(element => {
+            html = html + '<div class="second"><div class="owner"';
+            html = html + ' >';
+            html = html + element;
+            html = html + ' ( ';
+            html = html + data[element].callNum;
+            html = html + ' ) ';
+            html = html + '</div><div class="area">';
+            Object.keys(data[element].callSource).forEach(selement => {
+              html = html + '<div class="card">';
+              html = html + selement;
+              html = html + '</div>';
+            });
+            html = html + '</div></div>';
+          });
+          if(html ==''){
+            document.getElementById('versionMap').innerHTML ='<div class="noContent">-</div>';
+            return;
+          }
+          document.getElementById('versionMap').innerHTML = html;
+        }else{
+          document.getElementById('versionArea').style.display = 'none';
+        }
+      }
+      // 处理parseErrorInfos
       function doParseError() {
         var html = '';
         if(report.parseErrorInfos.length >0){
@@ -469,7 +508,7 @@
             html = html + data[element].callFiles[selement].projectName;
             html = html + ' : ';
             html = html + '</span>';
-            html = html + selement;
+            html = html + selement.split('&')[1];
             html = html + ' : [ ';
               const lineTemp = data[element].callFiles[selement].lines;
               const httpRepo = data[element].callFiles[selement].httpRepo || '';
@@ -477,7 +516,7 @@
                 if(httpRepo){
                   html = html + '<a class="httpReopBtn" href="';
                   html = html + httpRepo;
-                  html = html + selement;
+                  html = html + selement.split('&')[1];
                   html = html + '#L';
                   html = html + lineTemp[i];
                   html = html + '" target="_blank">';
@@ -514,6 +553,7 @@
           })
         }
         doParseError();
+        versionRender();
         if(report.scoreMap){
           doScore();
         }else{
