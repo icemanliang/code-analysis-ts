@@ -13,8 +13,8 @@
         cursor: default;
       }
       .title{
-        font-size: 26px;
-        width: 700px;
+        font-size: 24px;
+        width: 690px;
         display: flex;
       }
       .description {
@@ -22,29 +22,6 @@
         margin: auto 0px;
         color: #817e7e;
         padding-top: 8px;
-      }
-      .disChild_red {
-        margin-left: 5px;
-        background-color: red;
-        padding: 5px;
-        white-space: nowrap;
-      }
-      .disChild_zone {
-        background-color: rgb(177, 128, 65);
-        padding: 5px;
-        white-space: nowrap;
-      }
-      .disChild_blue {
-        margin-left: 5px;
-        background-color: rgb(69, 170, 238);
-        padding: 5px;
-        white-space: nowrap;
-      }
-      .disChild_gray {
-        margin-left: 5px;
-        background-color: gray;
-        padding: 5px;
-        white-space: nowrap;
       }
       .main{
         margin-bottom: 30px;
@@ -75,29 +52,12 @@
         margin-right: 10px;
         height: 26px;
         white-space: nowrap;
-        overflow-x: scroll;
+        overflow-x: auto;
+        overflow-y: hidden;
       }
       .owner:hover {
         cursor: default;
         opacity: 0.9;
-      }
-      .children {
-        margin-left: 5px;
-        margin-top: 10px;
-        background-color: gray;
-        padding: 5px;
-        color: #ffffff;
-        white-space: nowrap;
-      }
-      .children:hover {
-        cursor: pointer;
-        opacity: 0.8;
-      }
-      #noApiText {
-        margin-top: 20px;
-      }
-      .red {
-        color: red;
       }
       .gray-card {
         margin-left: 10px;
@@ -198,36 +158,33 @@
       .card:hover {
         cursor: default;
       }
-      .noParse {
+      .version-card {
+        margin-left: 10px;
         margin-top: 10px;
+        background-color: rgb(238 163 69);
+        padding: 5px;
+        color: #ffffff;
+        white-space: nowrap;
       }
-      #methodMap, #apiMap, #browserMap, #typeMap, #parseErrorInfos {
+      .version-card:hover {
+        cursor: default;
+      }
+      #methodMap, #apiMap, #browserMap, #typeMap, #parseErrorInfos, #versionMap {
         padding-top: 10px;
+        border-left: 2px solid #d81414;
+        padding-left: 10px;
       }
       .noContent{
         height:26px; 
         padding: 4px 4px 10px 4px;
       }
-      .line{
-        width: 1px; 
-        background-color: #d81414; 
-        margin: 10px;
-        box-shadow: 0px 0px 1px #d81414;
-      }
-      .line-2{
-        width: 1px; 
-        background-color: #d81414; 
-        margin: 0px 10px;
-        box-shadow: 0px 0px 1px #d81414;
-      }
-      .main_area_bottom{
-        border-bottom: 2px solid #d81414;
-      }
       .score_area{
-        margin-top:12px;
+        border-top: 2px solid #d81414;
       }
       #scoreNum {
         display: flex;
+        height: 58px;
+        line-height: 58px;
       }
       .left_score_title{
         text-align: center;
@@ -238,28 +195,29 @@
         cursor: default;
       }
       .left_score_num{
-        margin-left: 5px;
+        border-left: 2px solid #d81414;
+        padding-left: 10px;
       }
       .left_score_num:hover{
         cursor: default;
       }
       #scoreMessage {
-        margin-top: 12px;
         display: flex;
         border-top: 2px solid #d81414;
-        padding-top: 16px;
       }
       .left_message{
         text-align: center;
         color:rgb(13, 52, 226);
         min-width: 250px;
+        line-height: 58px;
+        border-right: 2px solid #d81414;
       }
       .left_message:hover{
         cursor: default;
       }
       .right_message{
         color: gray;
-        margin-left: 5px;
+        padding-left: 10px;
       }
       .right_message:hover{
         cursor: default;
@@ -306,7 +264,6 @@
         <div class="api_area">
           <div class="name">Method APIS：</div>
         </div>
-        <div class="line"></div>
         <div id="methodMap">
           <!-- -->
         </div>
@@ -316,7 +273,6 @@
         <div class="api_area">
           <div class="name">Type APIS：</div>
         </div>
-        <div class="line"></div>
         <div id="typeMap">
           <!-- -->
         </div>
@@ -326,7 +282,6 @@
         <div class="api_area">
           <div class="name">未分类 APIS：</div>
         </div>
-        <div class="line"></div>
         <div id="apiMap">
           <!-- -->
         </div>
@@ -336,27 +291,24 @@
         <div class="api_area">
           <div class="name">Browser APIS：</div>
         </div>
-        <div class="line"></div>
         <div id="browserMap">
           <!-- -->
         </div>
       </div>
       <!--noParseArea -->
-      <div class="main_area main_area_bottom">
+      <div class="main_area">
         <div class="api_area">
           <div class="name" style="color:rgb(13, 52, 226);">解析异常：</div>
         </div>
-        <div class="line"></div>
         <div id="parseErrorInfos">
           <!-- -->
         </div>
       </div>
       <!--versionMap -->
-      <div class="main_area main_area_bottom" id="versionArea">
+      <div class="main_area" id="versionArea">
         <div class="api_area">
           <div class="name" style="color:rgb(13, 52, 226);">依赖版本：</div>
         </div>
-        <div class="line"></div>
         <div id="versionMap">
           <!-- -->
         </div>
@@ -414,12 +366,9 @@
             html = html + '<div class="second"><div class="owner"';
             html = html + ' >';
             html = html + element;
-            html = html + ' ( ';
-            html = html + data[element].callNum;
-            html = html + ' ) ';
             html = html + '</div><div class="area">';
-            Object.keys(data[element].callSource).forEach(selement => {
-              html = html + '<div class="card">';
+            data[element].callSource.forEach(selement => {
+              html = html + '<div class="version-card">';
               html = html + selement;
               html = html + '</div>';
             });
@@ -463,14 +412,15 @@
       // 展示分数及代码建议
       function doScore(){
         var data = report.scoreMap;
-        var leftHtml ='<div class="left_score_title">代码得分：</div><div class="line-2"></div><div class="left_score_num">';
+        var leftHtml ='<div class="left_score_title">代码得分：</div><div class="left_score_num">';
         leftHtml = leftHtml + data.score;
         leftHtml = leftHtml + ' 分';
         document.getElementById('scoreNum').innerHTML = leftHtml;
 
         if(data.message.length>0){
-          var html ='<div class="left_message">优化建议：</div><div class="line"></div>';
+          var html ='<div class="left_message">优化建议：</div>';
           html = html + '<div class="right_message">';
+          html = html + '<div style="height:18px;"></div>';
           data.message.forEach((mes, index)=>{
             html = html + '<div class="line_message">';
             html = html + (index+1);
