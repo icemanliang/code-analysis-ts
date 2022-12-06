@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>代码分析报告</title>
+    <title>依赖调用分析报告</title>
     <style>
       .header{
         display: flex;
@@ -493,8 +493,8 @@
       // 入口函数
       function main() {
         // render header
-        document.title = report.reportTitle || '代码分析报告';
-        document.getElementById('reportTitle').innerText = report.reportTitle || '代码分析报告';
+        document.title = report.reportTitle || '依赖调用分析报告';
+        document.getElementById('reportTitle').innerText = report.reportTitle || '依赖调用分析报告';
         document.getElementById('reportTime').innerText = ' (' + report.analysisTime + ') ';
         // render api
         if(report.mapNames && report.mapNames.length>0){
