@@ -2,7 +2,7 @@
 [![Downloads](https://img.shields.io/npm/dm/code-analysis-ts.svg)](https://www.npmjs.com/package/code-analysis-ts)
 # code-analysis-ts
 
-[code-analysis-ts](https://www.npmjs.com/package/code-analysis-ts)是一款TS代码依赖扫描分析工具，可用于生成代码依赖分析报告，实现代码评分，代码告警，“脏”代码拦截等功能。支持CLI/API两种使用模式，通过npm script可以快速集成到业务CI自动化流程中。
+[code-analysis-ts](https://www.npmjs.com/package/code-analysis-ts)是一款前端依赖调用分析工具，可用于实现前端代码依赖调用分析报告，代码评分，代码告警，“脏调用”拦截，API趋势变化分析等应用场景。支持CLI/API两种使用模式，可快速集成到前端工程化体系中。
 
 ## Install
 
