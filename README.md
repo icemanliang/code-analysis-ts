@@ -2,7 +2,7 @@
 [![Downloads](https://img.shields.io/npm/dm/code-analysis-ts.svg)](https://www.npmjs.com/package/code-analysis-ts)
 # code-analysis-ts
 
-[code-analysis-ts](https://www.npmjs.com/package/code-analysis-ts)是一款前端依赖调用分析工具，可用于实现前端代码依赖调用分析报告，代码评分，代码告警，“脏调用”拦截，API趋势变化分析等应用场景。支持CLI/API两种使用模式，可快速集成到前端工程化体系中。
+[code-analysis-ts](https://www.npmjs.com/package/code-analysis-ts)是一款代码依赖调用分析工具，可用于实现代码依赖调用分析报告，代码评分，代码告警，“脏调用”拦截，API趋势变化分析等应用场景。支持CLI/API两种使用模式，可快速集成到前端工程化体系中。
 
 ## Install
 
@@ -164,7 +164,10 @@ module.exports = {
 }
 ```
 ## analysisPlugin说明
-自定义分析插件，分析工具默认自带的插件有type分析，method分析，默认api分析三个插件，如果开发者有更多分析指标的诉求，可以开发特定分析插件(比如分析Class类型的api，分析用于三目运算符表达式中的api,分析导入再导出api等场景)，开发分析插件需要对源码和分析工具架构及生命周期有一定的理解。
+自定义分析插件，分析工具内置插件有type分析，method分析，默认api分析三个插件，如果开发者有更多分析指标的诉求，可以开发特定分析插件(比如分析Class类型的api，分析用于三目运算符表达式中的api,分析导入再导出api等场景)，开发分析插件需要对源码和分析工具架构及生命周期有一定的理解。
+
+## 自定义插件库
+[code-analysis-plugins](https://www.npmjs.com/package/code-analysis-plugins)是与分析工具配套的分析插件库，用于分享一些常用指标分析插件。
 
 ## diagnosisInfos诊断日志说明
 诊断日志是在代码分析过程中插件及关键节点产生的错误信息记录，可以帮助开发者调试自定义插件，快速定位代码文件，代码行，AST节点等相关错误信息。
