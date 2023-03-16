@@ -17,7 +17,7 @@ yarn add code-analysis-ts --dev
 ```javascript
 const { execSync } = require('child_process');                        // 子进程操作
 const DefaultBranch = 'master';                                       // 默认分支常量
-function getGitBranch() {                                             // 获取当然分支
+function getGitBranch() {                                             // 获取当前分支
     try{
         const branchName = execSync('git symbolic-ref --short -q HEAD', {
             encoding: 'utf8'
@@ -69,7 +69,7 @@ $ yarn analysis
 const analysis = require('code-analysis-ts');                                   // 代码分析包
 const { execSync } = require('child_process');                                  // 子进程操作
 const DefaultBranch = 'master';                                                 // 默认分支常量
-function getGitBranch() {                                                       // 获取当然分支
+function getGitBranch() {                                                       // 获取当前分支
     try{
         const branchName = execSync('git symbolic-ref --short -q HEAD', {
             encoding: 'utf8'
