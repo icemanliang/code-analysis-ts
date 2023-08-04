@@ -39,7 +39,7 @@ module.exports = {
     }],                                                                 
     analysisTarget: 'framework',                                      // 必须，要分析的目标依赖名
     analysisPlugins: [],                                              // 可选，自定义分析插件，默认为空数组，一般不需要配置
-    blackList: ['app.localStorage.set'],                              // 可选，需要标记的黑名单api，默认为空数组
+    tagList: ['app.localStorage.set'],                                // 可选，需要标记的API列表，默认为空数组
     browserApis: ['window','document','history','location'],          // 可选，要分析的BrowserApi，默认为空数组
     reportDir: 'report',                                              // 可选，生成代码分析报告的目录，默认为'report',不支持多级目录配置
     reportTitle: 'Market依赖调用分析报告',                               // 可选，分析报告标题，默认为'依赖调用分析报告'
@@ -93,7 +93,7 @@ async function scan() {
             }],                                                                 
             analysisTarget: 'framework',                                      // 必须，要分析的目标依赖名
             analysisPlugins: [],                                              // 可选，自定义分析插件，默认为空数组，一般不需要配置
-            blackList: ['app.localStorage.set'],                              // 可选，需要标记的黑名单api，默认为空数组
+            tagList: ['app.localStorage.set'],                                // 可选，需要标记的API列表，默认为空数组
             browserApis: ['window','document','history','location'],          // 可选，要分析的BrowserApi，默认为空数组
             reportDir: 'report',                                              // 可选，生成代码分析报告的目录，默认为'report',不支持多级目录配置
             reportTitle: 'Market依赖调用分析报告',                               // 可选，分析报告标题，默认为'依赖调用分析报告'
@@ -126,13 +126,13 @@ exports.myScoreDeal = function (analysisContext){
     let score = 100;            // 初始分数
     let message =[];            // 代码建议
 
-    // 黑名单API扣分处理
+    // 标记API扣分处理
     if(mapNames.length>0){
         mapNames.forEach((item)=>{
             Object.keys(analysisContext[item]).forEach((sitem)=>{
-                if(analysisContext[item][sitem].isBlack){
+                if(analysisContext[item][sitem].isTag){
                     score = score - 5;
-                    message.push(sitem + ' 属于黑名单api，请勿使用');
+                    message.push(sitem + ' 属于标记api，请小心使用');
                 }
             })
         })

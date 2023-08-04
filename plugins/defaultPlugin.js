@@ -3,28 +3,26 @@ exports.defaultPlugin = function (analysisContext) {
     // 在分析实例上下文挂载副作用
     analysisContext[mapName] = {};
 
-    function isApiCheck (context, tsCompiler, node, depth, apiName, matchImportItem, filePath, projectName, httpRepo, line) {
+    function isApiCheck (context, tsCompiler, node, depth, apiName, matchImportItem, filePath, projectName, line) {
         try{
             if (!context[mapName][apiName]) {
                 context[mapName][apiName] = {};
-                context[mapName][apiName].callNum = 1;
-                context[mapName][apiName].callOrigin = matchImportItem.origin;
-                context[mapName][apiName].callFiles = {};
-                context[mapName][apiName].callFiles[filePath] = {};
-                context[mapName][apiName].callFiles[filePath].projectName = projectName;
-                context[mapName][apiName].callFiles[filePath].httpRepo = httpRepo;
-                context[mapName][apiName].callFiles[filePath].lines = [];
-                context[mapName][apiName].callFiles[filePath].lines.push(line);
+                context[mapName][apiName].cN = 1;
+                context[mapName][apiName].as = matchImportItem.origin;
+                context[mapName][apiName].cF = {};
+                context[mapName][apiName].cF[filePath] = {};
+                context[mapName][apiName].cF[filePath].pN = projectName;
+                context[mapName][apiName].cF[filePath].ls = [];
+                context[mapName][apiName].cF[filePath].ls.push(line);
             } else {
-                context[mapName][apiName].callNum++;
-                if (!Object.keys(context[mapName][apiName].callFiles).includes(filePath)) {
-                    context[mapName][apiName].callFiles[filePath] = {};
-                    context[mapName][apiName].callFiles[filePath].projectName = projectName;
-                    context[mapName][apiName].callFiles[filePath].httpRepo = httpRepo;
-                    context[mapName][apiName].callFiles[filePath].lines = [];
-                    context[mapName][apiName].callFiles[filePath].lines.push(line);
+                context[mapName][apiName].cN++;
+                if (!Object.keys(context[mapName][apiName].cF).includes(filePath)) {
+                    context[mapName][apiName].cF[filePath] = {};
+                    context[mapName][apiName].cF[filePath].pN = projectName;
+                    context[mapName][apiName].cF[filePath].ls = [];
+                    context[mapName][apiName].cF[filePath].ls.push(line);
                 }else{
-                    context[mapName][apiName].callFiles[filePath].lines.push(line);
+                    context[mapName][apiName].cF[filePath].ls.push(line);
                 }
             }
             return true;                                                                                 // true: 命中规则, 终止执行后序插件
@@ -34,7 +32,6 @@ exports.defaultPlugin = function (analysisContext) {
                 projectName: projectName,
                 matchImportItem: matchImportItem,
                 apiName: apiName,
-                httpRepo: httpRepo + filePath.split('&')[1] + '#L' + line,
                 file: filePath.split('&')[1],
                 line: line,
                 stack: e.stack

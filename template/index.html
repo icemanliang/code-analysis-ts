@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>依赖调用分析报告</title>
+    <title>代码分析报告</title>
     <style>
       .header{
         display: flex;
@@ -255,7 +255,7 @@
     <div class="header">
       <div class="title"><div id="reportTitle"></div><div id="reportTime"></div></div>
       <div class="description">
-        <span style="color:green;">tips：</span>红色字体表示黑名单API，<span style="color:green;margin-right:2px;">( )</span>中数字表示API调用次数，<span style="color:green;margin-right:2px;">-> </span>表示存在AS映射，<span style="color:green;margin-right:2px;">[ ]</span>中数字表示API所在文件代码行（配置httpRepo可跳转）
+        <span style="color:green;">tips：</span>红色字体表示标记API，<span style="color:green;margin-right:2px;">( )</span>中数字表示API调用次数，<span style="color:green;margin-right:2px;">-> </span>表示存在AS映射，<span style="color:green;margin-right:2px;">[ ]</span>中数字表示API所在文件代码行（配置httpRepo可跳转）
       </div>
     </div>
     <div class="main">
@@ -394,7 +394,7 @@
             html = html + index;
             html = html + '">';
             html = html + '<span style="color:#e9eb0c;">';
-            html = html + element.projectName;
+            html = html + element.pN;
             html = html + ' : ';
             html = html + '</span>';
             html = html + element.file;
@@ -437,31 +437,31 @@
         var html = '';
         Object.keys(data).forEach(element => {
           html = html + '<div class="second"><div class="owner"';
-          if(data[element].isBlack){
+          if(data[element].isTag){
             html = html + ' style="color:red"';
           }
           html = html + ' >';
           html = html + element;
           html = html + ' ( ';
-          html = html + data[element].callNum;
+          html = html + data[element].cN;
           html = html + ' ) ';
-          if(data[element].callOrigin){
+          if(data[element].as){
             html = html + '<span class="asStyle">';
             html = html + '-> ';
-            html = html + data[element].callOrigin;
+            html = html + data[element].as;
             html = html + '</span>';
           }
           html = html + '</div><div class="area">';
-          Object.keys(data[element].callFiles).forEach(selement => {
+          Object.keys(data[element].cF).forEach(selement => {
             html = html + '<div class="card">';
             html = html + '<span style="color:#e9eb0c;">';
-            html = html + data[element].callFiles[selement].projectName;
+            html = html + data[element].cF[selement].pN;
             html = html + ' : ';
             html = html + '</span>';
             html = html + selement.split('&')[1];
             html = html + ' : [ ';
-              const lineTemp = data[element].callFiles[selement].lines;
-              const httpRepo = data[element].callFiles[selement].httpRepo || '';
+              const lineTemp = data[element].cF[selement].ls;
+              const httpRepo = report.httpRepoMap[data[element].cF[selement].pN] || '';
               for(let i=0; i<lineTemp.length; i++){
                 if(httpRepo){
                   html = html + '<a class="httpReopBtn" href="';
