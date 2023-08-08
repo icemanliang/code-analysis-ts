@@ -1,15 +1,15 @@
-[![npm version](https://badge.fury.io/js/code-analysis-ts.svg)](https://www.npmjs.com/package/code-analysis-ts)
-[![Downloads](https://img.shields.io/npm/dm/code-analysis-ts.svg)](https://www.npmjs.com/package/code-analysis-ts)
-# code-analysis-ts
+[![npm version](https://badge.fury.io/js/code-analysis-ts-multi-progress.svg)](https://www.npmjs.com/package/code-analysis-ts-multi-progress)
+[![Downloads](https://img.shields.io/npm/dm/code-analysis-ts-multi-progress.svg)](https://www.npmjs.com/package/code-analysis-ts-multi-progress)
+# code-analysis-ts-multi-progress
 
-[code-analysis-ts](https://www.npmjs.com/package/code-analysis-ts)是一款前端代码分析工具，用于实现代码调用分析报告，代码评分，代码告警，“脏调用”拦截，API趋势变化分析等应用场景。支持CLI/API两种使用模式，可快速集成到前端工程化体系中，用于解决大型web应用的前端依赖治理难题。
+[code-analysis-ts-multi-progress](https://www.npmjs.com/package/code-analysis-ts-multi-progress)是一款前端代码分析工具，用于实现代码调用分析报告，代码评分，代码告警，“脏调用”拦截，API趋势变化分析等应用场景。支持CLI/API两种使用模式，可快速集成到前端工程化体系中，用于解决大型web应用的前端依赖治理难题。
 
 ## Install
 
 ```javascript
-npm install code-analysis-ts --save-dev
+npm install code-analysis-ts-multi-progress --save-dev
 // or
-yarn add code-analysis-ts --dev    
+yarn add code-analysis-ts-multi-progress --dev    
 ```
 ## Config
 
@@ -66,7 +66,7 @@ $ yarn analysis
 ### 2. api
 
 ```javascript
-const analysis = require('code-analysis-ts');                                   // 代码分析包
+const analysis = require('code-analysis-ts-multi-progress');                                   // 代码分析包
 const { execSync } = require('child_process');                                  // 子进程操作
 const DefaultBranch = 'master';                                                 // 默认分支常量
 function getGitBranch() {                                                       // 获取当前分支
@@ -111,7 +111,7 @@ scan();
 ```
 ## Demo
 
-[code-demo](https://github.com/liangxin199045/code-demo)演示如何使用code-analysis-ts的demo项目,使用github pages部署代码分析报告
+[code-demo](https://github.com/liangxin199045/code-demo)演示如何使用code-analysis-ts-multi-progress的demo项目,使用github pages部署代码分析报告
 
 ## scorePlugin说明
 配置文件中的scorePlugin配置项属于“函数插件”，使用者可以自定义代码评分插件来消费分析产物，评分插件需要对分析产物数据结构及属性有一定理解。下面是一个demo:

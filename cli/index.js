@@ -6,7 +6,6 @@ const chalk = require('chalk');                                                 
 const { writeReport, writeDiagnosisReport } = require(path.join(__dirname, '../lib/report'));   // 报告模块
 const { REPORTDEFAULTDIR, VUETEMPTSDIR } = require(path.join(__dirname, '../lib/constant'));    // 常量模块
 const { mkDir, rmDir } = require(path.join(__dirname, '../lib/file'));                          // 文件工具
-const codeAnalysis = require(path.join(__dirname,'../lib/index'));                              // 分析入口
 
 program
     .command('analysis')
@@ -50,6 +49,13 @@ program
                                     // 如果需要扫描vue文件，创建temp目录
                                     if(config.isScanVue){
                                         mkDir(VUETEMPTSDIR);
+                                    }
+                                    // 是否启用多进程
+                                    let codeAnalysis = null;
+                                    if(config.scanSource.length>1){
+                                        codeAnalysis = require(path.join(__dirname,'../lib/master'));        // 多进程分析入口
+                                    }else{
+                                        codeAnalysis = require(path.join(__dirname,'../lib/index'));         // 单进程分析入口
                                     }
                                     // 分析代码
                                     const { report, diagnosisInfos } = await codeAnalysis(config);

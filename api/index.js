@@ -2,7 +2,6 @@ const fs = require('fs');                                                       
 const path = require('path');                                                   // 路径操作
 const { VUETEMPTSDIR } = require(path.join(__dirname, '../lib/constant'));      // 常量模块
 const { mkDir, rmDir } = require(path.join(__dirname, '../lib/file'));          // 文件工具
-const codeAnalysis = require(path.join(__dirname, '../lib/index'));             // 分析入口
 
 const analysis = async function(options){
     if(options){
@@ -54,6 +53,14 @@ const analysis = async function(options){
         if(options.isScanVue){
             mkDir(VUETEMPTSDIR);
         }
+        // 是否启用多进程
+        let codeAnalysis = null;
+        if(config.scanSource.length>1){
+            codeAnalysis = require(path.join(__dirname,'../lib/master'));        // 多进程分析入口
+        }else{
+            codeAnalysis = require(path.join(__dirname,'../lib/index'));         // 单进程分析入口
+        }
+        // 分析代码
         const { report, diagnosisInfos } = await codeAnalysis(options);
         // 删除temp目录
         rmDir(VUETEMPTSDIR);
